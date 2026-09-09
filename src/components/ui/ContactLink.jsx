@@ -1,12 +1,12 @@
 import { CONTACT, createWhatsAppUrl, trackContact } from '../../config/contact'
 
-export function ContactLink({ type = 'whatsapp', placement, className = '', children, ...props }) {
+export function ContactLink({ type = 'whatsapp', placement, message, className = '', children, ...props }) {
   const isWhatsapp = type === 'whatsapp'
 
   return (
     <a
       className={className}
-      href={isWhatsapp ? createWhatsAppUrl() : CONTACT.phoneUrl}
+      href={isWhatsapp ? createWhatsAppUrl(message) : CONTACT.phoneUrl}
       target={isWhatsapp ? '_blank' : undefined}
       rel={isWhatsapp ? 'noopener noreferrer' : undefined}
       onClick={() => trackContact(type, placement)}

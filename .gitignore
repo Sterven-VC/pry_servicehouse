@@ -3,3 +3,31 @@ dist/
 *.log
 .env*
 !.env.example
+
+# Caches, tests, credentials and local tooling
+.vite/
+coverage/
+test-results/
+playwright-report/
+*.tsbuildinfo
+__pycache__/
+*.py[cod]
+.venv/
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.claude/settings.local.json
+.codex/config.local.toml
+.skill-backups/
+*.pem
+*.key
+# Source, build scripts, shared skills and package-lock.json stay versioned.
+
+# Owner's original photos and unpublished reference material (local backup).
+src/assets/images/source/
+artifacts/
+*.p12
+*.pfx

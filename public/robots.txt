@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-# Añadir Sitemap cuando se confirme el dominio final.

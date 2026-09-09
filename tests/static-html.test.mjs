@@ -6,13 +6,22 @@ import { test } from 'node:test'
 import { createServer } from 'vite'
 import { services, faqs } from '../src/data/siteData.js'
 import { CONTACT } from '../src/config/contact.js'
+import { normalizeSiteUrl } from '../build/seo.js'
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url))
 const dist = path.join(projectRoot, 'dist')
 
+test('SEO accepts only a clean HTTPS origin, never a fabricated default', () => {
+  assert.equal(normalizeSiteUrl(), '')
+  assert.equal(normalizeSiteUrl('https://example.com'), 'https://example.com/')
+  for (const value of ['http://example.com', 'https://example.com/path', 'https://example.com/?q=x', 'https://user:pass@example.com']) {
+    assert.throws(() => normalizeSiteUrl(value))
+  }
+})
+
 function assertInitialContent(html) {
   assert.equal((html.match(/<h1(?:\s|>)/g) || []).length, 1, 'Exactly one H1 must be in the response')
-  assert.match(html, /<main id="contenido">/)
+  assert.match(html, /<main id="contenido"[^>]*>/)
   for (const { title, text } of services) {
     assert.ok(html.includes(title), `Missing service: ${title}`)
     assert.ok(html.includes(text), `Missing service description: ${title}`)
@@ -26,6 +35,10 @@ function assertInitialContent(html) {
   assert.match(html, /<nav[^>]+aria-label="Navegación principal"/)
   assert.match(html, /<details[\s>]/)
   assert.match(html, /<footer>/)
+  assert.ok(html.includes('id="repuestos"'))
+  assert.ok(html.includes('Consultar un repuesto'))
+  assert.ok(html.includes('Imágenes referenciales.'))
+  assert.doesNotMatch(html, /src="[^\"]*(?:img\d+\.jpg|referencia-|\/source\/)/)
   assert.match(html, /data-render-year="\d{4}"/)
   assert.match(html, /<html[^>]+class="no-js"/)
   assert.doesNotMatch(html, /<!--app-html-->|__RENDER_YEAR__|<div id="root"[^>]*>\s*<\/div>/)
@@ -50,7 +63,9 @@ test('prerendered image, stylesheet and script URLs exist in the output', async 
   const cssUrl = urls.find(url => url.endsWith('.css'))
   const css = await readFile(path.join(dist, cssUrl.slice(1)), 'utf8')
   assert.ok(css.includes('.no-js .nav-links'))
-  assert.ok(css.includes('.no-js .legal-alert'))
+  assert.ok(css.includes('.legal-notice'))
+  assert.match(html, /<details class="legal-notice" id="aviso-legal">/)
+  assert.ok(html.includes('No somos un servicio técnico autorizado'))
 })
 
 test('development also returns complete HTML and CSS before the browser runs JS', async () => {

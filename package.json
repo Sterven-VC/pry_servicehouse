@@ -6,13 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test": "npm run build && node --test tests/static-html.test.mjs",
-    "preview": "vite preview"
+    "test": "npm run build && node --test tests/static-html.test.mjs tests/deployment.test.mjs",
+    "preview": "vite preview",
+    "start": "serve dist --listen tcp://0.0.0.0:8080 --no-clipboard --config ../serve.json"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "serve": "14.2.6"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",

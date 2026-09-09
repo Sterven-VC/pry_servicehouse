@@ -1,14 +1,17 @@
-export function Footer({ year, onOpenLegal }) {
+import { LegalAlert } from '../ui/LegalAlert'
+import brandLogo from '../../assets/brand/servihouse-logo.webp'
+
+export function Footer({ year }) {
   return (
     <footer>
       <div className="footer-main">
-        <img src="/logo-servihouse.webp" alt="SERVIHOUSE Línea Blanca" width="190" height="134" />
-        <p>Diagnóstico, mantenimiento y reparación de electrodomésticos a domicilio en Lima.</p>
+        <img src={brandLogo} alt="SERVIHOUSE Línea Blanca" width="1280" height="1280" loading="lazy" />
+        <p>Servicio técnico, instalación y repuestos para línea blanca y aire acondicionado a domicilio en Lima.</p>
         <div><a href="#servicios">Servicios</a><a href="#proceso">Cómo funciona</a><a href="#preguntas">Preguntas frecuentes</a></div>
       </div>
+      <LegalAlert />
       <div className="footer-bottom">
         <span>© {year} SERVIHOUSE. Empresa independiente.</span>
-        <button onClick={onOpenLegal}>Ver aviso legal</button>
       </div>
     </footer>
   )

@@ -1,20 +1,10 @@
-import { CircleAlert, X } from 'lucide-react'
+import { ChevronDown, Info } from 'lucide-react'
 
-export function LegalAlert({ open, onOpenChange }) {
+export function LegalAlert() {
   return (
-    <aside className={open ? 'legal-alert is-open' : 'legal-alert'} aria-live="polite" aria-label="Aviso legal">
-      {open ? (
-        <>
-          <div className="legal-head">
-            <CircleAlert />
-            <strong>¡Aviso legal!</strong>
-            <button aria-label="Minimizar aviso legal" onClick={() => onOpenChange(false)}><X /></button>
-          </div>
-          <p>No somos un servicio técnico autorizado por los fabricantes. Las marcas y nombres comerciales se utilizan únicamente con fines descriptivos para identificar los equipos que atendemos y no implican afiliación, representación, patrocinio ni autorización oficial. SERVIHOUSE es una empresa independiente con más de 5 años de experiencia en el mercado peruano.</p>
-        </>
-      ) : (
-        <button className="legal-chip" onClick={() => onOpenChange(true)}><CircleAlert /> Aviso legal</button>
-      )}
-    </aside>
+    <details className="legal-notice" id="aviso-legal">
+      <summary><Info aria-hidden="true" /><span>Aviso legal · Servicio independiente</span><ChevronDown aria-hidden="true" /></summary>
+          <p>No somos un servicio técnico autorizado por los fabricantes. Las marcas y nombres comerciales se utilizan únicamente con fines descriptivos para identificar los equipos que atendemos y no implican afiliación, representación, patrocinio ni autorización oficial. SERVIHOUSE es una empresa independiente con más de 10 años de experiencia en el mercado peruano.</p>
+    </details>
   )
 }

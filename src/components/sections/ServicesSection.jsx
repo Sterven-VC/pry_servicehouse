@@ -1,9 +1,9 @@
-import { ArrowRight, Refrigerator, Sparkles, WashingMachine, Zap } from 'lucide-react'
+import { AirVent, ArrowRight, PackageCheck, PlugZap, Refrigerator, WashingMachine, Zap } from 'lucide-react'
 import { services } from '../../data/siteData'
 import { ContactLink } from '../ui/ContactLink'
 import { Eyebrow } from '../ui/Eyebrow'
 
-const icons = { 'washing-machine': WashingMachine, refrigerator: Refrigerator, zap: Zap, sparkles: Sparkles }
+const icons = { 'air-vent': AirVent, 'washing-machine': WashingMachine, refrigerator: Refrigerator, zap: Zap, 'plug-zap': PlugZap, 'package-check': PackageCheck }
 
 export function ServicesSection() {
   return (
