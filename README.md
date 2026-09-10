@@ -1,76 +1,66 @@
-# SERVIHOUSE — landing page
+# SERVIHOUSE
 
-Landing page React + Vite con HTML prerenderizado para servicio técnico independiente de electrodomésticos a domicilio en Lima.
-
-## HTML primero
-
-El contenido completo se entrega en la primera respuesta HTML: encabezados, servicios, preguntas frecuentes, imágenes y enlaces de contacto. No se descarga un contenedor vacío para rellenarlo desde el navegador.
-
-- En producción, `build/prerender.js` genera el HTML desde `src/entry-server.jsx` durante `npm run build`. No se necesita un servidor React/Node en el hosting.
-- En desarrollo, el mismo árbol se renderiza antes de responder cada petición de la página.
-- `src/main.jsx` utiliza `hydrateRoot` para activar menú, widget y medición sobre el HTML existente. No vuelve a crear la página.
-- El CSS se enlaza directamente desde el HTML. Sin JavaScript (o si el bundle falla), la navegación y los contactos directos siguen disponibles. Las FAQ y el aviso legal usan `<details>` nativos. El aviso está siempre dentro del pie, sin superponerse al contenido.
-- El año del pie se comparte entre HTML e hidratación para evitar diferencias si un build sigue publicado después de cambiar de año.
-
-Para editar contenido, modifica los componentes o `src/data/siteData.js` y vuelve a ejecutar el build; no edites `dist/index.html` manualmente.
-
-### Comprobación automática
-
-`npm test` compila y comprueba que producción y desarrollo entreguen el H1, todos los servicios y respuestas FAQ, contactos y JSON-LD sin ejecutar JavaScript en el navegador. También valida las URLs de imágenes/CSS/JS generadas y los estilos de respaldo sin JavaScript.
-
-## Estructura
-
-```text
-src/
-├── assets/
-│   ├── brand/            # Logo vigente y recurso de WhatsApp
-│   └── images/           # Imágenes optimizadas y archivos fuente
-├── components/
-│   ├── layout/           # Cabecera y pie de página
-│   ├── sections/         # Secciones de la landing
-│   └── ui/               # Componentes reutilizables
-├── config/               # Contactos y medición
-├── data/                 # Servicios, marcas y preguntas frecuentes
-├── styles/               # Estilos globales y tokens visuales
-├── App.jsx               # Composición de la página
-├── entry-server.jsx      # Generación del HTML inicial
-└── main.jsx              # Hidratación de las interacciones
-
-public/
-├── brands/               # Logos servidos sin transformación por Vite
-└── robots.txt
-```
-
-El logo original vigente es `src/assets/brand/logo_servihose.png`. Cabecera y pie usan su derivado `servihouse-logo.webp` y el favicon es un PNG separado de 48 px. Las fotos de repuestos finales están en `src/assets/images/repuestos/`; sus originales se conservan localmente bajo `source/`, ignorados por Git. Ver `docs/imagenes.md`.
-
-## Documentación del proyecto
-
-La organización sigue `Arquitectura para proyectos con Claude Code.md`: `CLAUDE.md` es el índice breve y `docs/` contiene los detalles.
-
-- [Arquitectura](docs/arquitectura.md)
-- [Auditoría previa al despliegue](docs/auditoria-pre-despliegue.md)
-- [Medición y SEM](docs/medicion-y-sem.md)
-- [Imágenes e inventario](docs/imagenes.md)
-- [Auditoría vigente](docs/auditoria-2026-09-09.md)
-- [Commit y despliegue Seenode](docs/despliegue-seenode.md)
+Landing page React + Vite para servicio técnico independiente de electrodomésticos a domicilio en Lima. El HTML se prerenderiza durante el build y las interacciones se hidratan en el navegador.
 
 ## Desarrollo
+
+Requiere Node.js y npm.
 
 ```bash
 npm ci
 npm run dev
 ```
 
-## Build y despliegue
+Vite usa `http://localhost:5173` en desarrollo. Para validar antes de subir cambios:
 
 ```bash
-npm run build
+npm test
+npm audit
 ```
 
-La carpeta `dist/` puede desplegarse directamente en Vercel, Netlify o cualquier hosting estático. Antes de publicar, confirma el dominio y completa canonical, URL absoluta de Open Graph, sitemap, horarios, distritos atendidos y política de privacidad para campañas de Google Ads.
+## Despliegue en Seenode
 
-Para Seenode: build `npm ci && npm run build`, start `npm start`, puerto `8080`. El servidor publica solo dist. Configurar `SITE_URL` en build genera canonical, URLs sociales y sitemap automáticamente. No usar Vite como servidor público. Python/Pillow solo sirven para regenerar imágenes localmente, no son dependencias del despliegue.
+Después de hacer commit y push manual a GitHub, crear un servicio web desde Git con:
 
-## Medición
+| Campo | Valor |
+| --- | --- |
+| Directorio raíz | raíz del repositorio |
+| Build command | `npm ci && npm run build` |
+| Start command | `npm start` |
+| Puerto | `8080` |
 
-Los enlaces de contacto emiten un evento `contact_click` a `window.dataLayer`, con `contact_method` y `placement`, listo para conectarse con Google Tag Manager y conversiones de Google Ads.
+`npm start` sirve únicamente `dist/` en `0.0.0.0:8080`. `serve.json` configura 404 reales, desactiva el listado de directorios, añade cabeceras básicas y aplica caché prolongada a los recursos con hash. No se necesita base de datos ni almacenamiento persistente.
+
+Rutas públicas: `/`, `/aviso-legal/`, `/politica-de-privacidad/`, `/politica-de-cookies/` y `/terminos-y-condiciones/`.
+
+## Dominio y SEO
+
+Cuando se adquiera el dominio, configurar en Seenode la variable:
+
+```text
+SITE_URL=https://dominio-real.pe
+```
+
+Debe ser un origen HTTPS sin ruta, query ni fragmento. El build generará canonical, `og:url`, `og:image`, `robots.txt` y `sitemap.xml`. Cambiar el dominio requiere un nuevo despliegue.
+
+Después de conectar el dominio: validar DNS y HTTPS, registrar la propiedad en Google Search Console, enviar `/sitemap.xml` y ejecutar PageSpeed Insights y Rich Results Test sobre la URL pública.
+
+## Google Ads y Meta
+
+Los enlaces de contacto colocan `contact_click` en `window.dataLayer`, con `contact_method` (`whatsapp` o `call`) y `placement`. Todavía no hay GTM, GA4, Google Ads ni Meta Pixel instalados.
+
+Antes de invertir en anuncios se necesitan el dominio, política de privacidad y consentimiento acordes al tratamiento real, cobertura y horarios confirmados, presupuesto, cuentas del negocio y derechos de uso de imágenes. Un clic a WhatsApp o teléfono es una intención de contacto, no un mensaje enviado, una llamada atendida ni una venta. No enviar mensajes, teléfonos ni fotografías de clientes a Analytics.
+
+Al implementar medición, usar un único contenedor GTM o Google tag, crear variables para los dos campos anteriores, probar una sola emisión por acción y evitar duplicar la misma conversión entre GA4 y etiquetas directas de Ads. Los anuncios que abren WhatsApp directamente no atraviesan esta landing y no disparan su evento.
+
+## Archivos versionados
+
+- `src/`: aplicación y recursos optimizados utilizados.
+- `public/brands/`: marcas mostradas con fin descriptivo.
+- `build/`: prerender y generación SEO.
+- `tests/`: comprobaciones de HTML, recursos, seguridad básica del hosting y SEO.
+- `serve.json`, `package.json` y `package-lock.json`: ejecución reproducible en Seenode.
+- `.env.example`: referencia de la variable pública del dominio.
+- `THIRD_PARTY_ASSETS.md`: trazabilidad pendiente de recursos gráficos.
+
+Los originales pesados se conservan solo en `.local-assets/`, ignorado por Git. No editar `dist/` manualmente ni versionar `.env`, dependencias, builds o herramientas locales de agentes.

@@ -10,9 +10,11 @@ import { PartsSection } from './components/sections/PartsSection'
 import { PromiseSection } from './components/sections/PromiseSection'
 import { ServicesSection } from './components/sections/ServicesSection'
 import { TrustBar } from './components/sections/TrustBar'
+import { AreasSection } from './components/sections/AreasSection'
 import { FloatingWhatsApp } from './components/ui/FloatingWhatsApp'
+import { LegalPage } from './components/legal/LegalPage'
 
-function App({ year }) {
+function App({ year, page = 'home' }) {
   useEffect(() => {
     // Keep the no-JS layout until the interactive controls are actually ready.
     document.documentElement.classList.remove('no-js')
@@ -21,19 +23,15 @@ function App({ year }) {
   return (
     <>
       <a className="skip-link" href="#contenido">Saltar al contenido</a>
-      <Header />
+      <Header isHome={page === 'home'} />
       <main id="contenido" tabIndex="-1">
-        <HeroSection />
-        <TrustBar />
-        <BrandsSection />
-        <ServicesSection />
-        <PartsSection />
-        <ProcessSection />
-        <PromiseSection />
-        <FaqSection />
-        <FinalCtaSection />
+        {page === 'home' ? <>
+          <HeroSection /><TrustBar /><BrandsSection /><ServicesSection />
+          <PartsSection /><ProcessSection /><AreasSection /><PromiseSection />
+          <FaqSection /><FinalCtaSection />
+        </> : <LegalPage page={page} />}
       </main>
-      <Footer year={year} />
+      <Footer year={year} isHome={page === 'home'} />
       <FloatingWhatsApp />
     </>
   )

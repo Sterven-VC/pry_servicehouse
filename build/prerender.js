@@ -7,6 +7,7 @@ export function prerender() {
   let config
   let devServer
   let buildRenderer
+  let buildRendererPromise
 
   return {
     name: 'servihouse-static-html',
@@ -23,8 +24,8 @@ export function prerender() {
           throw new Error('Missing <!--app-html-->: refusing to serve an empty app shell.')
         }
 
-        if (!devServer && !buildRenderer) {
-          buildRenderer = await createServer({
+        if (!devServer && !buildRendererPromise) {
+          buildRendererPromise = createServer({
             configFile: false,
             root: config.root,
             mode: config.mode,
@@ -32,11 +33,13 @@ export function prerender() {
             appType: 'custom',
             server: { middlewareMode: true, hmr: false, watch: null },
             optimizeDeps: { noDiscovery: true, include: [] },
-          })
+          }).then(server => (buildRenderer = server))
         }
 
-        const { render } = await (devServer || buildRenderer).ssrLoadModule('/src/entry-server.jsx')
-        const { html, year } = render()
+        const renderer = devServer || buildRenderer || await buildRendererPromise
+        const page = template.match(/data-page="([^"]+)"/)?.[1] || 'home'
+        const { render } = await renderer.ssrLoadModule('/src/entry-server.jsx')
+        const { html, year } = render(page)
         return template.replace('<!--app-html-->', () => html).replace('__RENDER_YEAR__', String(year))
       },
     },
@@ -44,6 +47,7 @@ export function prerender() {
       // Never close the dev server from its own hook.
       await buildRenderer?.close()
       buildRenderer = undefined
+      buildRendererPromise = undefined
     },
   }
 }

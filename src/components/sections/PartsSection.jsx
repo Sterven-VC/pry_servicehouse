@@ -24,7 +24,7 @@ const parts = [
 function PartsGrid({ items }) {
   return <div className="parts-grid">{items.map(({ image, title, alt, category }) => (
     <figure className="part-item" key={title}>
-      <div className="part-image"><img src={image} alt={alt} width="640" height="640" loading="lazy" decoding="async" /></div>
+      <div className="part-image"><img src={image} alt={alt} title={title} width="640" height="640" loading="lazy" decoding="async" /></div>
       <figcaption><span>{category}</span><h3>{title}</h3></figcaption>
     </figure>
   ))}</div>

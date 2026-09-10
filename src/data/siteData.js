@@ -7,6 +7,24 @@ export const services = [
   { icon: 'package-check', title: 'Repuestos y accesorios', text: 'Venta de repuestos para ayudarte a recuperar el funcionamiento de tus equipos.' },
 ]
 
+export const serviceAreas = [
+  'Miraflores',
+  'San Isidro',
+  'Santiago de Surco',
+  'San Borja',
+  'La Molina',
+  'Jesús María',
+  'Pueblo Libre',
+  'Magdalena del Mar',
+  'San Miguel',
+  'Lince',
+  'Surquillo',
+  'Chorrillos',
+  'Barranco',
+  'Breña',
+  'Cercado de Lima',
+]
+
 export const brands = [
   { name: 'Samsung', src: '/brands/samsung.svg' },
   { name: 'LG', src: '/brands/lg.svg' },

@@ -1,15 +1,19 @@
 import { LegalAlert } from '../ui/LegalAlert'
 import brandLogo from '../../assets/brand/servihouse-logo.webp'
 
-export function Footer({ year }) {
+export function Footer({ year, isHome = true }) {
+  const section = id => isHome ? `#${id}` : `/#${id}`
   return (
     <footer>
       <div className="footer-main">
-        <img src={brandLogo} alt="SERVIHOUSE Línea Blanca" width="1280" height="1280" loading="lazy" />
+        <img src={brandLogo} alt="Logo de SERVIHOUSE Línea Blanca" title="SERVIHOUSE Línea Blanca" width="640" height="640" loading="lazy" />
         <p>Servicio técnico, instalación y repuestos para línea blanca y aire acondicionado a domicilio en Lima.</p>
-        <div><a href="#servicios">Servicios</a><a href="#proceso">Cómo funciona</a><a href="#preguntas">Preguntas frecuentes</a></div>
+        <div className="footer-links">
+          <div><a href={section('servicios')}>Servicios</a><a href={section('zonas')}>Zonas de atención</a><a href={section('preguntas')}>Preguntas frecuentes</a></div>
+          <div><a href="/aviso-legal/">Aviso legal</a><a href="/politica-de-privacidad/">Privacidad</a><a href="/politica-de-cookies/">Cookies</a><a href="/terminos-y-condiciones/">Términos y condiciones</a></div>
+        </div>
       </div>
-      <LegalAlert />
+      {isHome && <LegalAlert />}
       <div className="footer-bottom">
         <span>© {year} SERVIHOUSE. Empresa independiente.</span>
       </div>

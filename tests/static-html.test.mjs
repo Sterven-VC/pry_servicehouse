@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { test } from 'node:test'
 import { createServer } from 'vite'
-import { services, faqs } from '../src/data/siteData.js'
+import { services, faqs, serviceAreas } from '../src/data/siteData.js'
 import { CONTACT } from '../src/config/contact.js'
 import { normalizeSiteUrl } from '../build/seo.js'
 
@@ -37,10 +37,18 @@ function assertInitialContent(html) {
   assert.match(html, /<footer>/)
   assert.ok(html.includes('id="repuestos"'))
   assert.ok(html.includes('Consultar un repuesto'))
+  for (const area of serviceAreas) assert.ok(html.includes(area), `Missing service area: ${area}`)
   assert.ok(html.includes('Imágenes referenciales.'))
+  assert.doesNotMatch(html, /Pausar marcas|Reanudar marcas|brand-pause/)
   assert.doesNotMatch(html, /src="[^\"]*(?:img\d+\.jpg|referencia-|\/source\/)/)
   assert.match(html, /data-render-year="\d{4}"/)
   assert.match(html, /<html[^>]+class="no-js"/)
+  assert.match(html, /<meta name="keywords" content="[^"]+"/)
+  assert.equal((html.match(/<link[^>]+rel="canonical"/g) || []).length, 1)
+  for (const image of html.match(/<img\b[^>]*>/g) || []) {
+    assert.match(image, /\salt="[^"]*"/, `Missing alt attribute: ${image}`)
+    assert.match(image, /\stitle="[^"]+"/, `Missing title attribute: ${image}`)
+  }
   assert.doesNotMatch(html, /<!--app-html-->|__RENDER_YEAR__|<div id="root"[^>]*>\s*<\/div>/)
   const schema = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)
   assert.equal(JSON.parse(schema[1]).name, 'SERVIHOUSE')
@@ -55,6 +63,24 @@ test('production HTML contains all content without executing any JavaScript', as
   assert.ok(html.replace(/<!--[\s\S]*?-->/g, '').includes(`© ${year}`), 'The footer must use the year serialized for hydration')
 })
 
+test('legal pages are prerendered with unique content and local business identity', async () => {
+  const pages = [
+    ['aviso-legal', 'Aviso legal'],
+    ['politica-de-privacidad', 'Política de privacidad'],
+    ['politica-de-cookies', 'Política de cookies'],
+    ['terminos-y-condiciones', 'Términos y condiciones'],
+  ]
+  for (const [route, heading] of pages) {
+    const html = await readFile(path.join(dist, route, 'index.html'), 'utf8')
+    assert.equal((html.match(/<h1(?:\s|>)/g) || []).length, 1, route)
+    assert.ok(html.includes(heading), route)
+    assert.match(html, /<meta name="keywords" content="[^"]+"/)
+    assert.equal((html.match(/<link[^>]+rel="canonical"/g) || []).length, 1, route)
+    assert.ok(html.includes('VILLAR HERBOZO KARLA ARMIDA') || route === 'politica-de-cookies', route)
+    assert.doesNotMatch(html, /<!--app-html-->|__RENDER_YEAR__/)
+  }
+})
+
 test('prerendered image, stylesheet and script URLs exist in the output', async () => {
   const html = await readFile(path.join(dist, 'index.html'), 'utf8')
   const urls = [...html.matchAll(/(?:src|href)="(\/[^\"]+)"/g)].map(match => match[1])
@@ -62,7 +88,7 @@ test('prerendered image, stylesheet and script URLs exist in the output', async 
   for (const url of new Set(urls)) await access(path.join(dist, url.slice(1)))
   const cssUrl = urls.find(url => url.endsWith('.css'))
   const css = await readFile(path.join(dist, cssUrl.slice(1)), 'utf8')
-  assert.ok(css.includes('.no-js .nav-links'))
+  assert.ok(css.includes('.no-js .whatsapp-widget'))
   assert.ok(css.includes('.legal-notice'))
   assert.match(html, /<details class="legal-notice" id="aviso-legal">/)
   assert.ok(html.includes('No somos un servicio técnico autorizado'))

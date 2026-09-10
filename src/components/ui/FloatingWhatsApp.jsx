@@ -8,12 +8,21 @@ export function FloatingWhatsApp() {
   const [message, setMessage] = useState(CONTACT.whatsappMessage)
   const triggerRef = useRef(null)
   const messageRef = useRef(null)
+  const panelRef = useRef(null)
   const closePanel = () => { setIsOpen(false); triggerRef.current?.focus() }
   useEffect(() => { if (isOpen) messageRef.current?.focus() }, [isOpen])
 
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Escape' && isOpen) closePanel()
+      if (event.key === 'Tab' && isOpen) {
+        const focusable = panelRef.current?.querySelectorAll('button, textarea, a[href]')
+        if (!focusable?.length) return
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
+      }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
@@ -22,9 +31,9 @@ export function FloatingWhatsApp() {
   return (
     <div className={isOpen ? 'whatsapp-widget is-open' : 'whatsapp-widget'}>
       {isOpen && (
-        <section id="whatsapp-panel" className="whatsapp-panel" aria-label="Enviar mensaje por WhatsApp">
+        <section ref={panelRef} id="whatsapp-panel" className="whatsapp-panel" role="dialog" aria-modal="true" aria-label="Enviar mensaje por WhatsApp">
           <header className="whatsapp-panel-head">
-            <span className="whatsapp-avatar"><img src={whatsappIcon} alt="" /></span>
+            <span className="whatsapp-avatar"><img src={whatsappIcon} alt="" title="WhatsApp de SERVIHOUSE" /></span>
             <div><strong>SERVIHOUSE</strong><small>Normalmente respondemos por WhatsApp</small></div>
             <button type="button" onClick={closePanel} aria-label="Cerrar chat de WhatsApp"><X /></button>
           </header>
@@ -39,7 +48,7 @@ export function FloatingWhatsApp() {
         </section>
       )}
       <button ref={triggerRef} type="button" className="whatsapp-float" aria-label={isOpen ? 'Cerrar chat de WhatsApp' : 'Abrir chat de WhatsApp'} aria-expanded={isOpen} aria-controls={isOpen ? 'whatsapp-panel' : undefined} onClick={() => isOpen ? closePanel() : setIsOpen(true)}>
-        {isOpen ? <X /> : <img src={whatsappIcon} alt="" className="whatsapp-icon" />}
+        {isOpen ? <X /> : <img src={whatsappIcon} alt="" title="Abrir WhatsApp de SERVIHOUSE" className="whatsapp-icon" />}
       </button>
     </div>
   )

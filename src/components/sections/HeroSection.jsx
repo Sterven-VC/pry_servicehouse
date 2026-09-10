@@ -17,7 +17,7 @@ export function HeroSection() {
         <div className="micro-proof"><BadgeCheck size={20} /><span><strong>10 años de experiencia</strong> atendiendo hogares peruanos</span></div>
       </div>
       <div className="hero-visual">
-        <img src={heroImage} alt="Técnico independiente revisando una lavadora a domicilio" width="1774" height="887" fetchpriority="high" />
+        <img src={heroImage} alt="Técnico independiente revisando una lavadora a domicilio en Lima" title="Servicio técnico de electrodomésticos a domicilio en Lima" width="1774" height="887" fetchpriority="high" />
         <div className="availability"><span className="status-dot" /><div><strong>Coordina tu visita</strong><small>Consulta horarios por WhatsApp</small></div></div>
       </div>
     </section>
