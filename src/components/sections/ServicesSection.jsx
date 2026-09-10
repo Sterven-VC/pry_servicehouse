@@ -1,9 +1,9 @@
-import { AirVent, ArrowRight, PackageCheck, PlugZap, Refrigerator, WashingMachine, Zap } from 'lucide-react'
+import { AirVent, ArrowRight, Microwave, PackageCheck, PlugZap, Refrigerator, WashingMachine } from 'lucide-react'
 import { services } from '../../data/siteData'
 import { ContactLink } from '../ui/ContactLink'
 import { Eyebrow } from '../ui/Eyebrow'
 
-const icons = { 'air-vent': AirVent, 'washing-machine': WashingMachine, refrigerator: Refrigerator, zap: Zap, 'plug-zap': PlugZap, 'package-check': PackageCheck }
+const icons = { 'air-vent': AirVent, 'washing-machine': WashingMachine, refrigerator: Refrigerator, microwave: Microwave, 'plug-zap': PlugZap, 'package-check': PackageCheck }
 
 export function ServicesSection() {
   return (

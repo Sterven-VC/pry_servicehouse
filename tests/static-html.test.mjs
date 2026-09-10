@@ -45,9 +45,13 @@ function assertInitialContent(html) {
   assert.match(html, /data-render-year="\d{4}"/)
   assert.match(html, /<html[^>]+class="no-js"/)
   assert.match(html, /<meta name="keywords" content="[^"]+"/)
+  assert.match(html, /<meta name="author" content="SERVIHOUSE"/)
+  assert.match(html, /<meta name="publisher" content="SERVIHOUSE"/)
+  assert.doesNotMatch(html, /fonts\.(?:googleapis|gstatic)\.com/)
+  assert.doesNotMatch(html, /\bcocinas?\b/i)
   assert.equal((html.match(/<link[^>]+rel="canonical"/g) || []).length, 1)
   for (const image of html.match(/<img\b[^>]*>/g) || []) {
-    assert.match(image, /\salt="[^"]*"/, `Missing alt attribute: ${image}`)
+    assert.match(image, /\salt="[^"]+"/, `Missing or empty alt attribute: ${image}`)
     assert.match(image, /\stitle="[^"]+"/, `Missing title attribute: ${image}`)
   }
   assert.doesNotMatch(html, /<!--app-html-->|__RENDER_YEAR__|<div id="root"[^>]*>\s*<\/div>/)
@@ -61,6 +65,8 @@ test('production HTML contains all content without executing any JavaScript', as
   const html = await readFile(path.join(dist, 'index.html'), 'utf8')
   assertInitialContent(html)
   assert.ok(html.includes('<link rel="canonical" href="https://sevihouseperu.com/">'))
+  assert.match(html, /<link rel="image_src" href="https:\/\/sevihouseperu\.com\/assets\/[^"]+\.webp"/)
+  assert.match(html, /<meta name="twitter:image" content="https:\/\/sevihouseperu\.com\/assets\/[^"]+\.webp"/)
   assert.match(html, /<link[^>]+rel="stylesheet"[^>]+href="\/assets\/[^\"]+\.css"/)
   assert.doesNotMatch(html, /(?:src|href)="\/src\//)
   const year = html.match(/data-render-year="(\d{4})"/)[1]

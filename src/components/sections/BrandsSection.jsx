@@ -5,7 +5,7 @@ function BrandSet({ decorative = false }) {
     <div className="brand-set" aria-hidden={decorative}>
       {brands.map(({ name, src }) => (
         <div className="brand-logo" key={name}>
-          {src ? <img src={src} alt={decorative ? '' : `Logotipo de ${name}, marca de electrodomésticos atendida`} title={`Equipos ${name}`} loading="lazy" /> : <strong className="brand-wordmark">{name}</strong>}
+          {src ? <img src={src} alt={`Logotipo de ${name}, marca de electrodomésticos atendida`} title={`Equipos ${name}`} loading="lazy" decoding="async" /> : <strong className="brand-wordmark">{name}</strong>}
         </div>
       ))}
     </div>

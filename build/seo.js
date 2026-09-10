@@ -49,9 +49,20 @@ export function seo() {
       // Vite resolves imported image placeholders only after HTML transforms.
       // Use the emitted filename so social previews receive the real hashed URL.
       const pages = Object.entries(bundle).filter(([name]) => name.endsWith('.html')).map(([, item]) => item)
-      const hero = Object.keys(bundle).find(name => /servihouse-technician.*\.webp$/.test(name))
+      const hero = Object.keys(bundle).find(name => /servihouse-technician.*\.webp$/.test(name) && !name.includes('technician-768'))
       if (siteUrl && hero) {
-        for (const page of pages) if (!String(page.source).includes('property="og:image"')) page.source = String(page.source).replace('</head>', `<meta property="og:image" content="${new URL(hero, siteUrl).href}">\n</head>`)
+        const imageUrl = new URL(hero, siteUrl).href
+        for (const page of pages) {
+          let source = String(page.source)
+          const tags = []
+          if (!source.includes('property="og:image"')) tags.push(`<meta property="og:image" content="${imageUrl}">`)
+          if (!source.includes('property="og:image:alt"')) tags.push('<meta property="og:image:alt" content="Técnico de SERVIHOUSE atendiendo un electrodoméstico a domicilio">')
+          if (!source.includes('name="twitter:image"')) tags.push(`<meta name="twitter:image" content="${imageUrl}">`)
+          if (!source.includes('name="twitter:image:alt"')) tags.push('<meta name="twitter:image:alt" content="Técnico de SERVIHOUSE atendiendo un electrodoméstico a domicilio">')
+          if (!source.includes('rel="image_src"')) tags.push(`<link rel="image_src" href="${imageUrl}">`)
+          if (tags.length) source = source.replace('</head>', `${tags.join('\n')}\n</head>`)
+          page.source = source
+        }
       }
       this.emitFile({ type: 'asset', fileName: 'robots.txt', source: `User-agent: *\nAllow: /\n${siteUrl ? `\nSitemap: ${siteUrl}sitemap.xml\n` : ''}` })
       if (siteUrl) {

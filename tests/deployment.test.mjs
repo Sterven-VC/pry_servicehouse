@@ -15,6 +15,8 @@ test('static hosting serves home, legal routes and assets, not source files or f
     assert.equal(response.status, 200)
     assert.equal(response.headers.get('x-content-type-options'), 'nosniff')
     assert.equal(response.headers.get('x-frame-options'), 'DENY')
+    assert.ok(response.headers.get('strict-transport-security').includes('max-age=31536000'))
+    assert.equal(response.headers.get('x-robots-tag'), 'index, follow, max-image-preview:large')
     assert.ok(response.headers.get('content-security-policy').includes("default-src 'self'"))
     const html = await response.text()
     const image = html.match(/src="(\/assets\/[^\"]+\.webp)"/)[1]
@@ -53,6 +55,8 @@ test('SEO emits consistent canonical, social image and sitemap when domain is co
     const bundle = { 'index.html': { source: '<head></head>' }, 'assets/servihouse-technician-built.webp': {} }
     plugin.generateBundle.call({ emitFile: file => files.push(file) }, {}, bundle)
     assert.ok(bundle['index.html'].source.includes('https://example.com/assets/servihouse-technician-built.webp'))
+    assert.ok(bundle['index.html'].source.includes('name="twitter:image"'))
+    assert.ok(bundle['index.html'].source.includes('rel="image_src"'))
     assert.ok(files.find(f => f.fileName === 'sitemap.xml').source.includes('<loc>https://example.com/</loc>'))
     assert.ok(files.find(f => f.fileName === 'sitemap.xml').source.includes('<loc>https://example.com/aviso-legal/</loc>'))
     assert.ok(files.find(f => f.fileName === 'robots.txt').source.includes('Sitemap: https://example.com/sitemap.xml'))

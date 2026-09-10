@@ -6,8 +6,8 @@ export function Footer({ year, isHome = true }) {
   return (
     <footer>
       <div className="footer-main">
-        <img src={brandLogo} alt="Logo de SERVIHOUSE Línea Blanca" title="SERVIHOUSE Línea Blanca" width="640" height="640" loading="lazy" />
-        <p>Servicio técnico, instalación y repuestos para línea blanca y aire acondicionado a domicilio en Lima.</p>
+        <img src={brandLogo} alt="Logo de SERVIHOUSE Línea Blanca" title="SERVIHOUSE Línea Blanca" width="384" height="384" loading="lazy" decoding="async" />
+        <p>Servicio técnico para lavadoras, lavasecas, refrigeradoras, hornos, campanas extractoras y aire acondicionado a domicilio en Lima.</p>
         <div className="footer-links">
           <div><a href={section('servicios')}>Servicios</a><a href={section('zonas')}>Zonas de atención</a><a href={section('preguntas')}>Preguntas frecuentes</a></div>
           <div><a href="/aviso-legal/">Aviso legal</a><a href="/politica-de-privacidad/">Privacidad</a><a href="/politica-de-cookies/">Cookies</a><a href="/terminos-y-condiciones/">Términos y condiciones</a></div>

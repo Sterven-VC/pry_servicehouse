@@ -17,7 +17,7 @@ export function Header({ isHome = true }) {
       </div>
       <div className="nav-shell">
         <a href={isHome ? '#inicio' : '/'} className="brand" aria-label="SERVIHOUSE, inicio">
-          <img src={brandLogo} alt="Logo de SERVIHOUSE Línea Blanca" title="SERVIHOUSE Línea Blanca" width="640" height="640" />
+          <img src={brandLogo} alt="Logo de SERVIHOUSE Línea Blanca" title="SERVIHOUSE Línea Blanca" width="384" height="384" />
         </a>
         <button className="menu-toggle" aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'} aria-controls="navegacion-principal" aria-expanded={menuOpen} onKeyDown={(event) => { if (event.key === 'Escape') closeMenu() }} onClick={() => setMenuOpen(!menuOpen)}>
           {menuOpen ? <X /> : <Menu />}

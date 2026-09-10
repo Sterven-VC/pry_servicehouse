@@ -33,7 +33,7 @@ export function FloatingWhatsApp() {
       {isOpen && (
         <section ref={panelRef} id="whatsapp-panel" className="whatsapp-panel" role="dialog" aria-modal="true" aria-label="Enviar mensaje por WhatsApp">
           <header className="whatsapp-panel-head">
-            <span className="whatsapp-avatar"><img src={whatsappIcon} alt="" title="WhatsApp de SERVIHOUSE" /></span>
+            <span className="whatsapp-avatar"><img src={whatsappIcon} alt="Icono de WhatsApp de SERVIHOUSE" title="WhatsApp de SERVIHOUSE" aria-hidden="true" /></span>
             <div><strong>SERVIHOUSE</strong><small>Normalmente respondemos por WhatsApp</small></div>
             <button type="button" onClick={closePanel} aria-label="Cerrar chat de WhatsApp"><X /></button>
           </header>
@@ -48,7 +48,7 @@ export function FloatingWhatsApp() {
         </section>
       )}
       <button ref={triggerRef} type="button" className="whatsapp-float" aria-label={isOpen ? 'Cerrar chat de WhatsApp' : 'Abrir chat de WhatsApp'} aria-expanded={isOpen} aria-controls={isOpen ? 'whatsapp-panel' : undefined} onClick={() => isOpen ? closePanel() : setIsOpen(true)}>
-        {isOpen ? <X /> : <img src={whatsappIcon} alt="" title="Abrir WhatsApp de SERVIHOUSE" className="whatsapp-icon" />}
+        {isOpen ? <X /> : <img src={whatsappIcon} alt="Icono de WhatsApp de SERVIHOUSE" title="Abrir WhatsApp de SERVIHOUSE" className="whatsapp-icon" aria-hidden="true" />}
       </button>
     </div>
   )
