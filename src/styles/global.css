@@ -263,6 +263,16 @@ footer { max-width: 1380px; margin-inline: auto; padding: 56px clamp(20px, 5vw, 
 .footer-bottom { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: .7rem; }
 .footer-bottom button { border: 0; padding: 10px; background: transparent; color: var(--blue); text-decoration: underline; }
 
+.cookie-consent { position: fixed; z-index: 120; left: 50%; bottom: 20px; width: min(920px, calc(100vw - 32px)); display: flex; align-items: center; justify-content: space-between; gap: 28px; padding: 22px 24px; transform: translateX(-50%); border: 1px solid color-mix(in oklch, var(--blue) 24%, var(--line)); border-radius: var(--radius-md); background: var(--white); box-shadow: var(--shadow-lift); }
+.cookie-consent > div:first-child { display: flex; flex-direction: column; align-items: flex-start; gap: 7px; }
+.cookie-consent strong { color: var(--blue-dark); font-size: 1rem; }
+.cookie-consent p { max-width: 70ch; color: var(--ink-soft); font-size: .78rem; line-height: 1.55; }
+.cookie-consent a { color: var(--blue); font-size: .75rem; font-weight: 800; }
+.cookie-actions { display: flex; flex: 0 0 auto; gap: 10px; }
+.cookie-actions button { min-height: 46px; padding: 0 16px; border: 1px solid var(--blue); border-radius: var(--radius-sm); font-size: .76rem; font-weight: 800; }
+.cookie-reject { color: var(--blue); background: var(--white); }
+.cookie-accept { color: var(--white); background: var(--blue); }
+
 .whatsapp-widget { position: fixed; z-index: 90; right: 22px; bottom: 22px; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
 .whatsapp-widget::after { content: ''; position: absolute; right: 0; bottom: 0; width: 56px; height: 56px; border: 1px solid color-mix(in oklch, var(--success) 76%, transparent); border-radius: 50%; pointer-events: none; animation: whatsapp-ring 2.8s var(--ease-out) infinite; }
 .whatsapp-widget.is-open::after { display: none; }
@@ -353,6 +363,8 @@ footer { max-width: 1380px; margin-inline: auto; padding: 56px clamp(20px, 5vw, 
   .footer-main { grid-template-columns: 1fr; gap: 24px; }
   .footer-main > .footer-links { grid-template-columns: 1fr; }
   .footer-bottom { align-items: flex-start; flex-direction: column; }
+  .cookie-consent { bottom: 12px; align-items: stretch; flex-direction: column; gap: 16px; padding: 19px; }
+  .cookie-actions { display: grid; grid-template-columns: 1fr 1fr; }
   .whatsapp-widget { right: 14px; bottom: 14px; }
   .topline a, .footer-main a { min-height: 48px; display: inline-flex; align-items: center; }
   .footer-links > div { gap: 8px; }

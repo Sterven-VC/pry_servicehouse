@@ -16,6 +16,7 @@ export function Footer({ year, isHome = true }) {
       {isHome && <LegalAlert />}
       <div className="footer-bottom">
         <span>© {year} SERVIHOUSE. Empresa independiente.</span>
+        <button type="button" onClick={() => window.dispatchEvent(new Event('open-cookie-settings'))}>Configurar cookies</button>
       </div>
     </footer>
   )

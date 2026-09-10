@@ -1,3 +1,5 @@
+import { getAnalyticsConsent } from '../lib/analytics.js'
+
 export const CONTACT = {
   whatsappDisplay: '912 138 192',
   whatsappNumber: '51912138192',
@@ -11,6 +13,7 @@ export function createWhatsAppUrl(message = CONTACT.whatsappMessage) {
 }
 
 export function trackContact(method, placement) {
+  if (getAnalyticsConsent() !== 'granted') return
   window.dataLayer = window.dataLayer || []
   window.dataLayer.push({
     event: 'contact_click',

@@ -48,6 +48,7 @@ function assertInitialContent(html) {
   assert.match(html, /<meta name="author" content="SERVIHOUSE"/)
   assert.match(html, /<meta name="publisher" content="SERVIHOUSE"/)
   assert.doesNotMatch(html, /fonts\.(?:googleapis|gstatic)\.com/)
+  assert.ok(html.includes('Configurar cookies'))
   assert.doesNotMatch(html, /\bcocinas?\b/i)
   assert.equal((html.match(/<link[^>]+rel="canonical"/g) || []).length, 1)
   for (const image of html.match(/<img\b[^>]*>/g) || []) {
@@ -65,6 +66,7 @@ test('production HTML contains all content without executing any JavaScript', as
   const html = await readFile(path.join(dist, 'index.html'), 'utf8')
   assertInitialContent(html)
   assert.ok(html.includes('<link rel="canonical" href="https://sevihouseperu.com/">'))
+  assert.match(html, /<link rel="icon" type="image\/png" sizes="48x48" href="\/favicon\.png"\s*\/?>/)
   assert.match(html, /<link rel="image_src" href="https:\/\/sevihouseperu\.com\/assets\/[^"]+\.webp"/)
   assert.match(html, /<meta name="twitter:image" content="https:\/\/sevihouseperu\.com\/assets\/[^"]+\.webp"/)
   assert.match(html, /<link[^>]+rel="stylesheet"[^>]+href="\/assets\/[^\"]+\.css"/)
@@ -89,6 +91,9 @@ test('legal pages are prerendered with unique content and local business identit
     assert.ok(html.includes('VILLAR HERBOZO KARLA ARMIDA') || route === 'politica-de-cookies', route)
     assert.doesNotMatch(html, /<!--app-html-->|__RENDER_YEAR__/)
   }
+  const cookies = await readFile(path.join(dist, 'politica-de-cookies', 'index.html'), 'utf8')
+  assert.ok(cookies.includes('Google Analytics 4'))
+  assert.ok(cookies.includes('solo se carga si eliges'))
 })
 
 test('prerendered image, stylesheet and script URLs exist in the output', async () => {

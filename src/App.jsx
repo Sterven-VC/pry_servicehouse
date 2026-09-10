@@ -13,6 +13,7 @@ import { TrustBar } from './components/sections/TrustBar'
 import { AreasSection } from './components/sections/AreasSection'
 import { FloatingWhatsApp } from './components/ui/FloatingWhatsApp'
 import { LegalPage } from './components/legal/LegalPage'
+import { CookieConsent } from './components/ui/CookieConsent'
 
 function App({ year, page = 'home' }) {
   useEffect(() => {
@@ -33,6 +34,7 @@ function App({ year, page = 'home' }) {
       </main>
       <Footer year={year} isHome={page === 'home'} />
       <FloatingWhatsApp />
+      <CookieConsent />
     </>
   )
 }

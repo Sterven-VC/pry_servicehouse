@@ -18,6 +18,7 @@ test('static hosting serves home, legal routes and assets, not source files or f
     assert.ok(response.headers.get('strict-transport-security').includes('max-age=31536000'))
     assert.equal(response.headers.get('x-robots-tag'), 'index, follow, max-image-preview:large')
     assert.ok(response.headers.get('content-security-policy').includes("default-src 'self'"))
+    assert.ok(response.headers.get('content-security-policy').includes('https://www.googletagmanager.com'))
     const html = await response.text()
     const image = html.match(/src="(\/assets\/[^\"]+\.webp)"/)[1]
     const asset = await fetch(origin + image)
