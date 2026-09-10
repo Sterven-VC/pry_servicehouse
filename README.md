@@ -38,10 +38,10 @@ Rutas públicas: `/`, `/aviso-legal/`, `/politica-de-privacidad/`, `/politica-de
 Cuando se adquiera el dominio, configurar en Seenode la variable:
 
 ```text
-SITE_URL=https://dominio-real.pe
+SITE_URL=https://sevihouseperu.com
 ```
 
-Debe ser un origen HTTPS sin ruta, query ni fragmento. El build generará canonical, `og:url`, `og:image`, `robots.txt` y `sitemap.xml`. Cambiar el dominio requiere un nuevo despliegue.
+Debe ser un origen HTTPS sin ruta, query ni fragmento. El dominio de producción ya está definido como respaldo en el build, y esta variable lo deja explícito en Seenode. El build generará canonical, `og:url`, `og:image`, `robots.txt` y `sitemap.xml`. Cambiar el dominio requiere un nuevo despliegue.
 
 Después de conectar el dominio: validar DNS y HTTPS, registrar la propiedad en Google Search Console, enviar `/sitemap.xml` y ejecutar PageSpeed Insights y Rich Results Test sobre la URL pública.
 

@@ -10,6 +10,7 @@
     <link rel="canonical" href="__CANONICAL_URL__" />
     <meta property="og:locale" content="es_PE" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="SERVIHOUSE" />
     <meta property="og:title" content="SERVIHOUSE | Línea blanca y aire acondicionado a domicilio" />
     <meta property="og:description" content="Servicio técnico, instalación y repuestos para equipos de línea blanca y aire acondicionado en Lima." />
     <meta name="twitter:card" content="summary_large_image" />
@@ -22,12 +23,53 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "HomeAndConstructionBusiness",
-        "name": "SERVIHOUSE",
-        "description": "Servicio técnico independiente de línea blanca y aire acondicionado a domicilio en Lima, con instalación de equipos y venta de repuestos.",
-        "telephone": "+51 997 628 986",
-        "areaServed": { "@type": "City", "name": "Lima" },
-        "knowsAbout": ["Reparación de lavadoras", "Reparación de refrigeradoras", "Instalación de aire acondicionado", "Reparación de aire acondicionado", "Instalación de electrodomésticos", "Repuestos de electrodomésticos"]
+        "@graph": [
+          {
+            "@type": "HomeAndConstructionBusiness",
+            "@id": "https://sevihouseperu.com/#business",
+            "name": "SERVIHOUSE",
+            "alternateName": "SEVIHOUSE Perú",
+            "url": "https://sevihouseperu.com/",
+            "description": "Servicio técnico independiente de línea blanca y aire acondicionado a domicilio en Lima, con instalación de equipos y venta de repuestos.",
+            "telephone": "+51 997 628 986",
+            "email": "karlavillarherbozo@gmail.com",
+            "areaServed": [
+              { "@type": "City", "name": "Lima Metropolitana" },
+              { "@type": "AdministrativeArea", "name": "Miraflores" },
+              { "@type": "AdministrativeArea", "name": "San Isidro" },
+              { "@type": "AdministrativeArea", "name": "Santiago de Surco" },
+              { "@type": "AdministrativeArea", "name": "San Borja" },
+              { "@type": "AdministrativeArea", "name": "La Molina" },
+              { "@type": "AdministrativeArea", "name": "Jesús María" },
+              { "@type": "AdministrativeArea", "name": "Pueblo Libre" },
+              { "@type": "AdministrativeArea", "name": "Magdalena del Mar" },
+              { "@type": "AdministrativeArea", "name": "San Miguel" },
+              { "@type": "AdministrativeArea", "name": "Lince" },
+              { "@type": "AdministrativeArea", "name": "Surquillo" },
+              { "@type": "AdministrativeArea", "name": "Chorrillos" },
+              { "@type": "AdministrativeArea", "name": "Barranco" },
+              { "@type": "AdministrativeArea", "name": "Breña" },
+              { "@type": "AdministrativeArea", "name": "Cercado de Lima" }
+            ],
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+51 997 628 986",
+              "contactType": "customer service",
+              "areaServed": "PE",
+              "availableLanguage": "Spanish"
+            },
+            "knowsAbout": ["Reparación de lavadoras", "Reparación de refrigeradoras", "Instalación de aire acondicionado", "Reparación de aire acondicionado", "Instalación de electrodomésticos", "Repuestos de electrodomésticos"]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://sevihouseperu.com/#website",
+            "url": "https://sevihouseperu.com/",
+            "name": "SERVIHOUSE",
+            "alternateName": "SEVIHOUSE Perú",
+            "inLanguage": "es-PE",
+            "publisher": { "@id": "https://sevihouseperu.com/#business" }
+          }
+        ]
       }
     </script>
   </head>

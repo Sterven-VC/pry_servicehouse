@@ -6,12 +6,13 @@ import { test } from 'node:test'
 import { createServer } from 'vite'
 import { services, faqs, serviceAreas } from '../src/data/siteData.js'
 import { CONTACT } from '../src/config/contact.js'
-import { normalizeSiteUrl } from '../build/seo.js'
+import { DEFAULT_SITE_URL, normalizeSiteUrl } from '../build/seo.js'
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url))
 const dist = path.join(projectRoot, 'dist')
 
 test('SEO accepts only a clean HTTPS origin, never a fabricated default', () => {
+  assert.equal(DEFAULT_SITE_URL, 'https://sevihouseperu.com/')
   assert.equal(normalizeSiteUrl(), '')
   assert.equal(normalizeSiteUrl('https://example.com'), 'https://example.com/')
   for (const value of ['http://example.com', 'https://example.com/path', 'https://example.com/?q=x', 'https://user:pass@example.com']) {
@@ -51,12 +52,15 @@ function assertInitialContent(html) {
   }
   assert.doesNotMatch(html, /<!--app-html-->|__RENDER_YEAR__|<div id="root"[^>]*>\s*<\/div>/)
   const schema = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)
-  assert.equal(JSON.parse(schema[1]).name, 'SERVIHOUSE')
+  const graph = JSON.parse(schema[1])['@graph']
+  assert.equal(graph.find(item => item['@type'] === 'HomeAndConstructionBusiness').name, 'SERVIHOUSE')
+  assert.equal(graph.find(item => item['@type'] === 'WebSite').url, 'https://sevihouseperu.com/')
 }
 
 test('production HTML contains all content without executing any JavaScript', async () => {
   const html = await readFile(path.join(dist, 'index.html'), 'utf8')
   assertInitialContent(html)
+  assert.ok(html.includes('<link rel="canonical" href="https://sevihouseperu.com/">'))
   assert.match(html, /<link[^>]+rel="stylesheet"[^>]+href="\/assets\/[^\"]+\.css"/)
   assert.doesNotMatch(html, /(?:src|href)="\/src\//)
   const year = html.match(/data-render-year="(\d{4})"/)[1]

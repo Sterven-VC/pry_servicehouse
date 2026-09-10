@@ -1,5 +1,6 @@
 import { loadEnv } from 'vite'
 
+export const DEFAULT_SITE_URL = 'https://sevihouseperu.com/'
 export const PUBLIC_ROUTES = ['/', '/aviso-legal/', '/politica-de-privacidad/', '/politica-de-cookies/', '/terminos-y-condiciones/']
 
 function routeFromPath(path = '/') {
@@ -23,7 +24,7 @@ export function seo() {
     name: 'servihouse-seo',
     enforce: 'post',
     configResolved(config) {
-      siteUrl = normalizeSiteUrl(loadEnv(config.mode, config.root, 'SITE_').SITE_URL)
+      siteUrl = normalizeSiteUrl(loadEnv(config.mode, config.root, 'SITE_').SITE_URL || DEFAULT_SITE_URL)
     },
     transformIndexHtml: {
       order: 'post',
