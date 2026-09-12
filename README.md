@@ -47,11 +47,11 @@ Después de conectar el dominio: validar DNS y HTTPS, registrar la propiedad en 
 
 ## Google Ads y Meta
 
-Los enlaces de contacto colocan `contact_click` en `window.dataLayer`, con `contact_method` (`whatsapp` o `call`) y `placement`. Todavía no hay GTM, GA4, Google Ads ni Meta Pixel instalados.
+Con consentimiento de analítica, los enlaces de contacto envían a GA4 el evento `contact_click`, con `contact_method` (`whatsapp` o `call`) y `placement`. La etiqueta GA4 se carga solo tras aceptar el consentimiento. No hay GTM, etiqueta directa de Google Ads ni Meta Pixel instalados.
 
 Antes de invertir en anuncios se necesitan el dominio, política de privacidad y consentimiento acordes al tratamiento real, cobertura y horarios confirmados, presupuesto, cuentas del negocio y derechos de uso de imágenes. Un clic a WhatsApp o teléfono es una intención de contacto, no un mensaje enviado, una llamada atendida ni una venta. No enviar mensajes, teléfonos ni fotografías de clientes a Analytics.
 
-Al implementar medición, usar un único contenedor GTM o Google tag, crear variables para los dos campos anteriores, probar una sola emisión por acción y evitar duplicar la misma conversión entre GA4 y etiquetas directas de Ads. Los anuncios que abren WhatsApp directamente no atraviesan esta landing y no disparan su evento.
+Al importar este evento en Ads, identificarlo como clic o intención de contacto y evitar duplicarlo con una etiqueta directa de Ads. Los anuncios que abren WhatsApp directamente no atraviesan esta landing y no disparan su evento.
 
 ## Archivos versionados
 

@@ -6,10 +6,29 @@ import { test } from 'node:test'
 import { createServer } from 'vite'
 import { services, faqs, serviceAreas } from '../src/data/siteData.js'
 import { CONTACT } from '../src/config/contact.js'
+import { trackContact } from '../src/config/contact.js'
 import { DEFAULT_SITE_URL, normalizeSiteUrl } from '../build/seo.js'
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url))
 const dist = path.join(projectRoot, 'dist')
+
+test('contact tracking sends one consented GA4 event without message or phone data', () => {
+  const previousWindow = globalThis.window
+  const events = []
+  globalThis.window = {
+    localStorage: { getItem: () => 'granted' },
+    gtag: (...args) => events.push(args),
+  }
+  try {
+    trackContact('whatsapp', 'hero')
+    assert.deepEqual(events, [['event', 'contact_click', { contact_method: 'whatsapp', placement: 'hero' }]])
+    globalThis.window.localStorage.getItem = () => 'denied'
+    trackContact('call', 'header')
+    assert.equal(events.length, 1)
+  } finally {
+    globalThis.window = previousWindow
+  }
+})
 
 test('SEO accepts only a clean HTTPS origin, never a fabricated default', () => {
   assert.equal(DEFAULT_SITE_URL, 'https://sevihouseperu.com/')

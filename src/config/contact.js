@@ -14,9 +14,8 @@ export function createWhatsAppUrl(message = CONTACT.whatsappMessage) {
 
 export function trackContact(method, placement) {
   if (getAnalyticsConsent() !== 'granted') return
-  window.dataLayer = window.dataLayer || []
-  window.dataLayer.push({
-    event: 'contact_click',
+  if (typeof window.gtag !== 'function') return
+  window.gtag('event', 'contact_click', {
     contact_method: method,
     placement,
   })
