@@ -17,7 +17,7 @@ export function ServicesSection() {
       <div className="service-list">
         {services.map(({ icon, title, text }, index) => {
           const Icon = icons[icon]
-          return <article className="service-row" key={title}><span className="service-number">0{index + 1}</span><Icon aria-hidden="true" /><div><h3>{title}</h3><p>{text}</p></div></article>
+          return <article className="service-row" key={title}><span className="service-number">0{index + 1}</span><Icon aria-hidden="true" /><div><h3>{icon === 'washing-machine' ? <a href="/servicio-tecnico-lavadoras-lima/">{title}</a> : title}</h3><p>{text}</p></div></article>
         })}
       </div>
     </section>

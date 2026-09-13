@@ -115,6 +115,19 @@ test('legal pages are prerendered with unique content and local business identit
   assert.ok(cookies.includes('solo se carga si eliges'))
 })
 
+test('lavadoras service page has distinct, indexable content and an internal link', async () => {
+  const home = await readFile(path.join(dist, 'index.html'), 'utf8')
+  const html = await readFile(path.join(dist, 'servicio-tecnico-lavadoras-lima', 'index.html'), 'utf8')
+  assert.ok(home.includes('href="/servicio-tecnico-lavadoras-lima/"'))
+  assert.equal((html.match(/<h1(?:\s|>)/g) || []).length, 1)
+  assert.match(html, /<h1>Servicio técnico de lavadoras a domicilio en Lima<\/h1>/)
+  assert.match(html, /<link rel="canonical" href="https:\/\/sevihouseperu\.com\/servicio-tecnico-lavadoras-lima\/">/)
+  assert.match(html, /<title>Servicio técnico de lavadoras en Lima \| SERVIHOUSE<\/title>/)
+  assert.ok(html.includes('Fallas de encendido'))
+  assert.ok(html.includes('href="https://wa.me/'))
+  assert.doesNotMatch(html, /<!--app-html-->|__RENDER_YEAR__/)
+})
+
 test('prerendered image, stylesheet and script URLs exist in the output', async () => {
   const html = await readFile(path.join(dist, 'index.html'), 'utf8')
   const urls = [...html.matchAll(/(?:src|href)="(\/[^\"]+)"/g)].map(match => match[1])

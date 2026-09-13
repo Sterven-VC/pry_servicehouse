@@ -31,7 +31,7 @@ Después de hacer commit y push manual a GitHub, crear un servicio web desde Git
 
 `npm start` sirve únicamente `dist/` en `0.0.0.0:8080`. `serve.json` configura 404 reales, desactiva el listado de directorios, añade cabeceras básicas y aplica caché prolongada a los recursos con hash. No se necesita base de datos ni almacenamiento persistente.
 
-Rutas públicas: `/`, `/aviso-legal/`, `/politica-de-privacidad/`, `/politica-de-cookies/` y `/terminos-y-condiciones/`.
+Rutas públicas: `/`, `/servicio-tecnico-lavadoras-lima/`, `/aviso-legal/`, `/politica-de-privacidad/`, `/politica-de-cookies/` y `/terminos-y-condiciones/`.
 
 ## Dominio y SEO
 

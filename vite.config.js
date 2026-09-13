@@ -10,6 +10,7 @@ export default defineConfig({
     target: 'es2020', assetsInlineLimit: 0,
     rollupOptions: { input: {
       main: fileURLToPath(new URL('./index.html', import.meta.url)),
+      lavadoras: fileURLToPath(new URL('./servicio-tecnico-lavadoras-lima/index.html', import.meta.url)),
       avisoLegal: fileURLToPath(new URL('./aviso-legal/index.html', import.meta.url)),
       privacidad: fileURLToPath(new URL('./politica-de-privacidad/index.html', import.meta.url)),
       cookies: fileURLToPath(new URL('./politica-de-cookies/index.html', import.meta.url)),

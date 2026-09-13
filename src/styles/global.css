@@ -229,6 +229,27 @@ footer { max-width: 1380px; margin-inline: auto; padding: 56px clamp(20px, 5vw, 
 .areas-note p { max-width: 67ch; color: var(--ink-soft); font-size: .82rem; }
 .areas-note .btn { flex: 0 0 auto; }
 
+.service-row h3 a { color: inherit; text-decoration-color: var(--blue); text-underline-offset: .16em; }
+.service-row h3 a:hover { color: var(--blue); }
+.service-detail { background: var(--surface-alt); }
+.service-detail-hero { padding-block: clamp(54px, 7vw, 100px) clamp(64px, 8vw, 110px); }
+.service-detail-hero nav { display: flex; align-items: center; gap: 12px; margin-bottom: 44px; color: var(--ink-soft); font-size: .75rem; }
+.service-detail-hero nav a { display: inline-flex; align-items: center; gap: 6px; color: var(--blue); font-weight: 800; }
+.service-detail-intro { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: clamp(32px, 5vw, 80px); }
+.service-detail-intro h1 { max-width: 12ch; margin-block: 16px 24px; font-size: clamp(3rem, 6vw, 6rem); line-height: .95; }
+.service-detail-intro p:not(.eyebrow) { max-width: 60ch; color: var(--ink-soft); line-height: 1.75; }
+.service-detail-intro .hero-actions { margin-top: 28px; }
+.service-detail-intro img { width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: cover; border-radius: var(--radius-md); }
+.service-detail-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 90px); padding-block: clamp(72px, 9vw, 120px); background: var(--white); }
+.service-detail-body section { max-width: 68ch; }
+.service-detail-body h2 { margin-bottom: 18px; font-size: clamp(2rem, 4vw, 3.2rem); }
+.service-detail-body h3 { margin-block: 22px 8px; font-size: 1.2rem; }
+.service-detail-body p, .service-detail-body li { margin-bottom: 16px; color: var(--ink-soft); line-height: 1.8; }
+.service-detail-body ul { padding-left: 23px; }
+.service-detail-body a:not(.btn) { color: var(--blue); font-weight: 800; }
+.service-detail-contact { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: clamp(28px, 4vw, 52px); background: var(--blue-deep); border-radius: var(--radius-md); }
+.service-detail-contact p { color: var(--white); font-size: 1.2rem; font-weight: 700; }
+
 .legal-page { min-height: 60vh; background: var(--surface-alt); }
 .legal-hero { padding: clamp(70px, 9vw, 118px) max(20px, calc((100vw - 1160px) / 2)); background: var(--blue-deep); color: var(--white); }
 .legal-hero nav { display: flex; gap: 10px; margin-bottom: 34px; color: var(--sky); font-size: .75rem; }
@@ -303,6 +324,7 @@ footer { max-width: 1380px; margin-inline: auto; padding: 56px clamp(20px, 5vw, 
 @keyframes whatsapp-pulse { 0%, 100% { transform: translateY(0) scale(1); } 28% { transform: translateY(-5px) scale(1.03); } 56% { transform: translateY(0) scale(1); } 74% { transform: translateY(-3px) scale(1.02); } }
 
 @media (max-width: 980px) {
+  .service-detail-intro, .service-detail-body { grid-template-columns: 1fr; }
   .menu-toggle { display: inline-flex; }
   .nav-links { position: absolute; top: 100%; left: 16px; right: 16px; display: none; flex-direction: column; align-items: stretch; gap: 4px; padding: 18px; background: var(--white); border: 1px solid var(--line); box-shadow: var(--shadow-lift); border-radius: var(--radius-md); }
   .nav-links.is-open { display: flex; }

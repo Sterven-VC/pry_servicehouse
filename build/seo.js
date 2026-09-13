@@ -1,7 +1,7 @@
 import { loadEnv } from 'vite'
 
 export const DEFAULT_SITE_URL = 'https://sevihouseperu.com/'
-export const PUBLIC_ROUTES = ['/', '/aviso-legal/', '/politica-de-privacidad/', '/politica-de-cookies/', '/terminos-y-condiciones/']
+export const PUBLIC_ROUTES = ['/', '/servicio-tecnico-lavadoras-lima/', '/aviso-legal/', '/politica-de-privacidad/', '/politica-de-cookies/', '/terminos-y-condiciones/']
 
 function routeFromPath(path = '/') {
   const normalized = path.replace(/\\/g, '/').replace(/index\.html$/, '')

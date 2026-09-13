@@ -24,7 +24,7 @@ test('static hosting serves home, legal routes and assets, not source files or f
     const asset = await fetch(origin + image)
     assert.equal(asset.status, 200)
     assert.ok(asset.headers.get('cache-control').includes('immutable'))
-    for (const path of ['/aviso-legal/', '/politica-de-privacidad/', '/politica-de-cookies/', '/terminos-y-condiciones/']) {
+    for (const path of ['/servicio-tecnico-lavadoras-lima/', '/aviso-legal/', '/politica-de-privacidad/', '/politica-de-cookies/', '/terminos-y-condiciones/']) {
       const page = await fetch(origin + path)
       assert.equal(page.status, 200, path)
       assert.match(await page.text(), /<h1(?:\s|>)/)
@@ -59,6 +59,7 @@ test('SEO emits consistent canonical, social image and sitemap when domain is co
     assert.ok(bundle['index.html'].source.includes('name="twitter:image"'))
     assert.ok(bundle['index.html'].source.includes('rel="image_src"'))
     assert.ok(files.find(f => f.fileName === 'sitemap.xml').source.includes('<loc>https://example.com/</loc>'))
+    assert.ok(files.find(f => f.fileName === 'sitemap.xml').source.includes('<loc>https://example.com/servicio-tecnico-lavadoras-lima/</loc>'))
     assert.ok(files.find(f => f.fileName === 'sitemap.xml').source.includes('<loc>https://example.com/aviso-legal/</loc>'))
     assert.ok(files.find(f => f.fileName === 'robots.txt').source.includes('Sitemap: https://example.com/sitemap.xml'))
   } finally {
