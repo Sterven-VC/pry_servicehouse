@@ -8,8 +8,11 @@ export const CONTACT = {
   phoneUrl: 'tel:+51997628986',
 }
 
+const WHATSAPP_SOURCE = 'Enviado desde https://sevihouseperu.com'
+
 export function createWhatsAppUrl(message = CONTACT.whatsappMessage) {
-  return `https://wa.me/${CONTACT.whatsappNumber}?text=${encodeURIComponent(message)}`
+  const text = `${message.trimEnd()}\n\n${WHATSAPP_SOURCE}`
+  return `https://wa.me/${CONTACT.whatsappNumber}?text=${encodeURIComponent(text)}`
 }
 
 export function trackContact(method, placement) {
