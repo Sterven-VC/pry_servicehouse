@@ -5,12 +5,19 @@ import path from 'node:path'
 import { test } from 'node:test'
 import { createServer } from 'vite'
 import { services, faqs, serviceAreas } from '../src/data/siteData.js'
-import { CONTACT } from '../src/config/contact.js'
+import { CONTACT, createWhatsAppUrl } from '../src/config/contact.js'
 import { trackContact } from '../src/config/contact.js'
 import { DEFAULT_SITE_URL, normalizeSiteUrl } from '../build/seo.js'
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url))
 const dist = path.join(projectRoot, 'dist')
+
+test('all WhatsApp links include the site origin after their message', () => {
+  for (const message of [CONTACT.whatsappMessage, 'Consulta sobre lavadoras']) {
+    const url = new URL(createWhatsAppUrl(message))
+    assert.equal(url.searchParams.get('text'), `${message}\n\nOrigen: https://sevihouseperu.com`)
+  }
+})
 
 test('contact tracking sends one consented GA4 event without message or phone data', () => {
   const previousWindow = globalThis.window

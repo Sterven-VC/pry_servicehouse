@@ -9,7 +9,7 @@ export const CONTACT = {
 }
 
 export function createWhatsAppUrl(message = CONTACT.whatsappMessage) {
-  return `https://wa.me/${CONTACT.whatsappNumber}?text=${encodeURIComponent(message)}`
+  return `https://wa.me/${CONTACT.whatsappNumber}?text=${encodeURIComponent(`${message}\n\nOrigen: https://sevihouseperu.com`)}`
 }
 
 export function trackContact(method, placement) {
