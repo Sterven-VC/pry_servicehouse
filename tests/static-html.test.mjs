@@ -15,7 +15,7 @@ const dist = path.join(projectRoot, 'dist')
 test('all WhatsApp links include the site origin after their message', () => {
   for (const message of [CONTACT.whatsappMessage, 'Consulta sobre lavadoras']) {
     const url = new URL(createWhatsAppUrl(message))
-    assert.equal(url.searchParams.get('text'), `${message}\n\nOrigen: https://sevihouseperu.com`)
+    assert.equal(url.searchParams.get('text'), `${message}\n\nEnviado desde: https://sevihouseperu.com`)
   }
 })
 
