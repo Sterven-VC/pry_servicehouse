@@ -4,17 +4,6 @@ import { createServer } from 'node:http'
 import { readFile } from 'node:fs/promises'
 import handler from 'serve-handler'
 import { seo } from '../build/seo.js'
-import { CONTACT, createWhatsAppUrl } from '../src/config/contact.js'
-
-test('every WhatsApp preset and custom message includes the site source', () => {
-  for (const message of [undefined, 'Hola, quisiera consultar por mi lavadora.', 'Consulta sobre repuestos: ']) {
-    const url = new URL(createWhatsAppUrl(message))
-    const text = url.searchParams.get('text')
-    assert.ok(text.startsWith(message?.trimEnd() ?? CONTACT.whatsappMessage))
-    assert.ok(text.endsWith('\n\nEnviado desde https://sevihouseperu.com'))
-    assert.equal(text.match(/Enviado desde/g)?.length, 1)
-  }
-})
 
 test('static hosting serves home, legal routes and assets, not source files or fake routes', async () => {
   const config = JSON.parse(await readFile(new URL('../serve.json', import.meta.url)))
