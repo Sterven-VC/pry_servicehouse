@@ -41,7 +41,7 @@ export function PartsSection() {
       <details className="parts-more"><summary>Ver más tipos de repuestos</summary><PartsGrid items={parts.slice(4)} /></details>
       <div className="parts-contact">
         <p>Imágenes referenciales. El modelo, la compatibilidad, el precio y la disponibilidad se confirman antes de la compra. Servicio independiente de los fabricantes.</p>
-        <ContactLink placement="parts" message="Hola, quisiera información sobre un repuesto para mi electrodoméstico. Mi equipo y modelo son: " className="text-link">Consultar un repuesto <ArrowRight size={18} aria-hidden="true" /></ContactLink>
+        <ContactLink placement="parts" message="Hola, deseo consultar la disponibilidad de un repuesto para mi electrodoméstico." className="text-link">Consultar un repuesto <ArrowRight size={18} aria-hidden="true" /></ContactLink>
       </div>
     </div>
   </section>

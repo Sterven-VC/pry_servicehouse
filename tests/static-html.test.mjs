@@ -12,10 +12,16 @@ import { DEFAULT_SITE_URL, normalizeSiteUrl } from '../build/seo.js'
 const projectRoot = fileURLToPath(new URL('../', import.meta.url))
 const dist = path.join(projectRoot, 'dist')
 
-test('all WhatsApp links include the site origin after their message', () => {
+test('WhatsApp links use the new number and structured details without a site-origin link', () => {
   for (const message of [CONTACT.whatsappMessage, 'Consulta sobre lavadoras']) {
     const url = new URL(createWhatsAppUrl(message))
-    assert.equal(url.searchParams.get('text'), `${message}\n\nEnviado desde: https://sevihouseperu.com`)
+    assert.equal(url.pathname, '/51929853856')
+    const text = url.searchParams.get('text')
+    assert.ok(text.startsWith(`${message}\n\nEquipo:`))
+    assert.ok(text.includes('\nMarca y modelo o referencia:'))
+    assert.ok(text.includes('\nDistrito:'))
+    assert.ok(text.includes('\nFalla o servicio solicitado:'))
+    assert.ok(!text.includes('https://'))
   }
 })
 

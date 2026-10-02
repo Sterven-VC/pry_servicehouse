@@ -16,7 +16,7 @@ export function AreasSection() {
         </ul>
         <div className="areas-note">
           <p>Consulta previamente la atención disponible para tu distrito. Esta lista es referencial y no garantiza atención inmediata ni cobertura para todos los tipos de equipos.</p>
-          <ContactLink placement="areas" message="Hola, quisiera consultar la disponibilidad de atención a domicilio en mi distrito: " className="btn btn-primary"><MessageCircle size={20} aria-hidden="true" /> Consultar mi distrito</ContactLink>
+          <ContactLink placement="areas" className="btn btn-primary"><MessageCircle size={20} aria-hidden="true" /> Consultar mi distrito</ContactLink>
         </div>
       </div>
     </section>
