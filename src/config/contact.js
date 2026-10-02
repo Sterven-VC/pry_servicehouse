@@ -9,7 +9,7 @@ export const CONTACT = {
 }
 
 export function formatWhatsAppMessage(message = CONTACT.whatsappMessage) {
-  const details = 'Equipo: [tipo de equipo]\nMarca y modelo o referencia: [marca / modelo]\nDistrito: [distrito]\nFalla o servicio solicitado: [describe la falla o el mantenimiento]'
+  const details = 'Equipo: \nMarca y modelo o referencia: \nDistrito: \nFalla o servicio solicitado: '
   return `${message.trim()}\n\n${details}\n\nGracias. Quedo atento/a para coordinar la visita.`
 }
 

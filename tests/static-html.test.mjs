@@ -21,6 +21,8 @@ test('WhatsApp links use the new number and structured details without a site-or
     assert.ok(text.includes('\nMarca y modelo o referencia:'))
     assert.ok(text.includes('\nDistrito:'))
     assert.ok(text.includes('\nFalla o servicio solicitado:'))
+    assert.ok(text.includes('Equipo: \nMarca y modelo o referencia: \nDistrito: \nFalla o servicio solicitado: '))
+    assert.ok(!/[\[\]]/.test(text))
     assert.ok(!text.includes('https://'))
   }
 })
