@@ -29,7 +29,9 @@ Después de hacer commit y push manual a GitHub, crear un servicio web desde Git
 | Start command | `npm start` |
 | Puerto | `8080` |
 
-`npm start` sirve únicamente `dist/` en `0.0.0.0:8080`. `serve.json` configura 404 reales, desactiva el listado de directorios, añade cabeceras básicas y aplica caché prolongada a los recursos con hash. No se necesita base de datos ni almacenamiento persistente.
+`npm start` ejecuta `server.mjs`, que sirve únicamente `dist/` en `0.0.0.0:8080` con compresión. Antes de servir archivos redirige con 301 `www.` al dominio canónico y las rutas públicas sin barra final a su versión con barra, conservando la query (`gclid`, UTM). `serve.json` configura 404 reales, desactiva el listado de directorios, añade cabeceras básicas y aplica caché prolongada a los recursos con hash. No se necesita base de datos ni almacenamiento persistente.
+
+Para que la redirección de `www` funcione, `www.sevihouseperu.com` debe apuntar a este mismo servicio en Seenode (dominio adicional con HTTPS).
 
 Rutas públicas: `/`, `/servicio-tecnico-lavadoras-lima/`, `/aviso-legal/`, `/politica-de-privacidad/`, `/politica-de-cookies/` y `/terminos-y-condiciones/`.
 
@@ -41,13 +43,13 @@ Cuando se adquiera el dominio, configurar en Seenode la variable:
 SITE_URL=https://sevihouseperu.com
 ```
 
-Debe ser un origen HTTPS sin ruta, query ni fragmento. El dominio de producción ya está definido como respaldo en el build, y esta variable lo deja explícito en Seenode. El build generará canonical, `og:url`, `og:image`, `robots.txt` y `sitemap.xml`. Cambiar el dominio requiere un nuevo despliegue.
+Debe ser un origen HTTPS sin ruta, query ni fragmento. El dominio de producción ya está definido como respaldo en el build, y esta variable lo deja explícito en Seenode. El build generará canonical, `og:url`, `og:image`, datos estructurados JSON-LD por página (`build/schema.js`, a partir de `src/config` y `src/data`), `robots.txt` y `sitemap.xml`. Cambiar el dominio requiere un nuevo despliegue.
 
 Después de conectar el dominio: validar DNS y HTTPS, registrar la propiedad en Google Search Console, enviar `/sitemap.xml` y ejecutar PageSpeed Insights y Rich Results Test sobre la URL pública.
 
 ## Google Ads y Meta
 
-Con consentimiento de analítica, los enlaces de contacto envían a GA4 el evento `contact_click`, con `contact_method` (`whatsapp` o `call`) y `placement`. La etiqueta GA4 se carga solo tras aceptar el consentimiento. No hay GTM, etiqueta directa de Google Ads ni Meta Pixel instalados.
+La etiqueta de Google (GA4) se carga en todas las visitas con Consent Mode v2 avanzado: `analytics_storage`, `ad_storage`, `ad_user_data` y `ad_personalization` empiezan en `denied` y solo pasan a `granted` al aceptar el banner. Sin consentimiento no se guardan cookies y Google recibe pings sin cookies que usa para modelar conversiones. Los enlaces de contacto envían el evento `contact_click`, con `contact_method` (`whatsapp` o `call`) y `placement`. No hay GTM, etiqueta directa de Google Ads ni Meta Pixel instalados; la CSP de `serve.json` ya permite los dominios de Google Ads.
 
 Antes de invertir en anuncios se necesitan el dominio, política de privacidad y consentimiento acordes al tratamiento real, cobertura y horarios confirmados, presupuesto, cuentas del negocio y derechos de uso de imágenes. Un clic a WhatsApp o teléfono es una intención de contacto, no un mensaje enviado, una llamada atendida ni una venta. No enviar mensajes, teléfonos ni fotografías de clientes a Analytics.
 

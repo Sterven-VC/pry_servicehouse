@@ -7,6 +7,7 @@ import { createServer } from 'vite'
 import { services, faqs, serviceAreas } from '../src/data/siteData.js'
 import { CONTACT, createWhatsAppUrl } from '../src/config/contact.js'
 import { trackContact } from '../src/config/contact.js'
+import { ANALYTICS_MEASUREMENT_ID, consentState, loadGoogleTag, saveAnalyticsConsent } from '../src/lib/analytics.js'
 import { DEFAULT_SITE_URL, normalizeSiteUrl } from '../build/seo.js'
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url))
@@ -27,21 +28,53 @@ test('WhatsApp links use the new number and structured details without a site-or
   }
 })
 
-test('contact tracking sends one consented GA4 event without message or phone data', () => {
+test('contact tracking sends one GA4 event without message or phone data and leaves storage to Consent Mode', () => {
   const previousWindow = globalThis.window
   const events = []
-  globalThis.window = {
-    localStorage: { getItem: () => 'granted' },
-    gtag: (...args) => events.push(args),
-  }
+  globalThis.window = { gtag: (...args) => events.push(args) }
   try {
     trackContact('whatsapp', 'hero')
-    assert.deepEqual(events, [['event', 'contact_click', { contact_method: 'whatsapp', placement: 'hero' }]])
-    globalThis.window.localStorage.getItem = () => 'denied'
     trackContact('call', 'header')
-    assert.equal(events.length, 1)
+    assert.deepEqual(events, [
+      ['event', 'contact_click', { contact_method: 'whatsapp', placement: 'hero' }],
+      ['event', 'contact_click', { contact_method: 'call', placement: 'header' }],
+    ])
+    delete globalThis.window.gtag
+    assert.doesNotThrow(() => trackContact('call', 'header'))
   } finally {
     globalThis.window = previousWindow
+  }
+})
+
+test('Google tag loads in Consent Mode v2 with everything denied until the visitor accepts', () => {
+  const previous = { window: globalThis.window, document: globalThis.document }
+  const scripts = []
+  let stored = null
+  globalThis.document = {
+    querySelector: () => scripts[0] || null,
+    createElement: () => ({ dataset: {} }),
+    head: { appendChild: script => scripts.push(script) },
+  }
+  globalThis.window = { localStorage: { getItem: () => stored, setItem: (_key, value) => { stored = value } } }
+  try {
+    loadGoogleTag()
+    loadGoogleTag()
+    assert.equal(scripts.length, 1)
+    assert.ok(scripts[0].src.includes(ANALYTICS_MEASUREMENT_ID))
+    const commands = window.dataLayer.map(args => [...args])
+    const denied = { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' }
+    assert.deepEqual(commands[0], ['consent', 'default', denied])
+    assert.ok(commands.findIndex(([command]) => command === 'config') > 0, 'consent default must precede config')
+    assert.ok(!commands.some(([command, action]) => command === 'consent' && action === 'update'))
+    saveAnalyticsConsent('granted')
+    assert.equal(stored, 'granted')
+    assert.deepEqual([...window.dataLayer.at(-1)], ['consent', 'update', consentState(true)])
+    assert.ok(Object.values(consentState(true)).every(value => value === 'granted'))
+    saveAnalyticsConsent('denied')
+    assert.deepEqual([...window.dataLayer.at(-1)], ['consent', 'update', denied])
+  } finally {
+    globalThis.window = previous.window
+    globalThis.document = previous.document
   }
 })
 
@@ -92,8 +125,24 @@ function assertInitialContent(html) {
   assert.doesNotMatch(html, /<!--app-html-->|__RENDER_YEAR__|<div id="root"[^>]*>\s*<\/div>/)
   const schema = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)
   const graph = JSON.parse(schema[1])['@graph']
-  assert.equal(graph.find(item => item['@type'] === 'HomeAndConstructionBusiness').name, 'SERVIHOUSE')
+  const business = graph.find(item => item['@type'] === 'HomeAndConstructionBusiness')
+  assert.equal(business.name, 'SERVIHOUSE')
+  assert.equal(business.telephone, '+51929853856')
+  assert.equal(business.contactPoint.telephone, `+${CONTACT.whatsappNumber}`)
+  assert.equal(CONTACT.phoneUrl, `tel:+${CONTACT.whatsappNumber}`, 'Calls and WhatsApp share the only business number')
+  assert.doesNotMatch(html, /997\s?628\s?986|51997628986/)
+  assert.equal(business.address.addressCountry, 'PE')
+  assert.equal(business.hasOfferCatalog.itemListElement.length, services.length)
   assert.equal(graph.find(item => item['@type'] === 'WebSite').url, 'https://sevihouseperu.com/')
+  assert.equal(graph.find(item => item['@type'] === 'WebPage').url, 'https://sevihouseperu.com/')
+  assert.match(html, /<h1>Servicio técnico de electrodomésticos a domicilio en Lima<\/h1>/)
+  assert.ok(html.includes('class="hero-tagline"'))
+}
+
+function readSchema(html) {
+  const scripts = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+  assert.equal(scripts.length, 1, 'Exactly one JSON-LD block per page')
+  return JSON.parse(scripts[0][1])['@graph']
 }
 
 test('production HTML contains all content without executing any JavaScript', async () => {
@@ -102,6 +151,11 @@ test('production HTML contains all content without executing any JavaScript', as
   assert.ok(html.includes('<link rel="canonical" href="https://sevihouseperu.com/">'))
   assert.match(html, /<link rel="icon" type="image\/png" sizes="48x48" href="\/favicon\.png"\s*\/?>/)
   assert.match(html, /<link rel="image_src" href="https:\/\/sevihouseperu\.com\/assets\/[^"]+\.webp"/)
+  const business = readSchema(html).find(item => item['@type'] === 'HomeAndConstructionBusiness')
+  for (const imageUrl of [business.logo.url, business.image]) {
+    assert.match(imageUrl, /^https:\/\/sevihouseperu\.com\/assets\/[^"]+\.webp$/)
+    await access(path.join(dist, new URL(imageUrl).pathname.slice(1)))
+  }
   assert.match(html, /<meta name="twitter:image" content="https:\/\/sevihouseperu\.com\/assets\/[^"]+\.webp"/)
   assert.match(html, /<link[^>]+rel="stylesheet"[^>]+href="\/assets\/[^\"]+\.css"/)
   assert.doesNotMatch(html, /(?:src|href)="\/src\//)
@@ -123,11 +177,14 @@ test('legal pages are prerendered with unique content and local business identit
     assert.match(html, /<meta name="keywords" content="[^"]+"/)
     assert.equal((html.match(/<link[^>]+rel="canonical"/g) || []).length, 1, route)
     assert.ok(html.includes('VILLAR HERBOZO KARLA ARMIDA') || route === 'politica-de-cookies', route)
+    const crumbs = readSchema(html).find(item => item['@type'] === 'BreadcrumbList').itemListElement
+    assert.deepEqual(crumbs.map(item => item.item), ['https://sevihouseperu.com/', `https://sevihouseperu.com/${route}/`], route)
     assert.doesNotMatch(html, /<!--app-html-->|__RENDER_YEAR__/)
   }
   const cookies = await readFile(path.join(dist, 'politica-de-cookies', 'index.html'), 'utf8')
   assert.ok(cookies.includes('Google Analytics 4'))
-  assert.ok(cookies.includes('solo se carga si eliges'))
+  assert.ok(cookies.includes('modo de consentimiento'))
+  assert.ok(cookies.includes('Google Ads'))
 })
 
 test('lavadoras service page has distinct, indexable content and an internal link', async () => {
@@ -139,6 +196,12 @@ test('lavadoras service page has distinct, indexable content and an internal lin
   assert.match(html, /<link rel="canonical" href="https:\/\/sevihouseperu\.com\/servicio-tecnico-lavadoras-lima\/">/)
   assert.match(html, /<title>Servicio técnico de lavadoras en Lima \| SERVIHOUSE<\/title>/)
   assert.ok(html.includes('Fallas de encendido'))
+  const graph = readSchema(html)
+  const service = graph.find(item => item['@type'] === 'Service')
+  assert.equal(service.url, 'https://sevihouseperu.com/servicio-tecnico-lavadoras-lima/')
+  assert.equal(service.provider['@id'], 'https://sevihouseperu.com/#business')
+  assert.equal(graph.find(item => item['@type'] === 'WebPage').mainEntity['@id'], service['@id'])
+  assert.deepEqual(graph.find(item => item['@type'] === 'BreadcrumbList').itemListElement.map(item => item.name), ['Inicio', 'Servicio técnico de lavadoras'])
   assert.ok(html.includes('href="https://wa.me/'))
   assert.doesNotMatch(html, /<!--app-html-->|__RENDER_YEAR__/)
 })

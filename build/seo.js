@@ -1,10 +1,12 @@
 import { loadEnv } from 'vite'
+import { DEFAULT_SITE_URL, PUBLIC_ROUTES } from './site.js'
+import { buildSchema, schemaScript } from './schema.js'
 
-export const DEFAULT_SITE_URL = 'https://sevihouseperu.com/'
-export const PUBLIC_ROUTES = ['/', '/servicio-tecnico-lavadoras-lima/', '/aviso-legal/', '/politica-de-privacidad/', '/politica-de-cookies/', '/terminos-y-condiciones/']
+export { DEFAULT_SITE_URL, PUBLIC_ROUTES }
 
 function routeFromPath(path = '/') {
-  const normalized = path.replace(/\\/g, '/').replace(/index\.html$/, '')
+  // Bundle file names have no leading slash ("aviso-legal/index.html").
+  const normalized = `/${path.replace(/\\/g, '/').replace(/index\.html$/, '')}`
   const match = PUBLIC_ROUTES.find(route => route !== '/' && normalized.endsWith(route))
   return match || '/'
 }
@@ -20,11 +22,13 @@ export function normalizeSiteUrl(value = '') {
 
 export function seo() {
   let siteUrl = ''
+  let isDevServer = false
   return {
     name: 'servihouse-seo',
     enforce: 'post',
     configResolved(config) {
       siteUrl = normalizeSiteUrl(loadEnv(config.mode, config.root, 'SITE_').SITE_URL || DEFAULT_SITE_URL)
+      isDevServer = config.command === 'serve'
     },
     transformIndexHtml: {
       order: 'post',
@@ -42,17 +46,29 @@ export function seo() {
         ]
         if (!canonicalPattern.test(html)) tags.unshift({ tag: 'link', attrs: { rel: 'canonical', href: pageUrl }, injectTo: 'head' })
         if (hero) tags.push({ tag: 'meta', attrs: { property: 'og:image', content: new URL(hero, siteUrl).href }, injectTo: 'head' })
+        // Builds add the schema in generateBundle, once hashed image URLs are known.
+        if (isDevServer) tags.push({ tag: 'script', attrs: { type: 'application/ld+json' }, children: JSON.stringify(buildSchema({ siteUrl, route, html })), injectTo: 'head' })
         return { html: pageHtml, tags }
       },
     },
     generateBundle(_options, bundle = {}) {
       // Vite resolves imported image placeholders only after HTML transforms.
       // Use the emitted filename so social previews receive the real hashed URL.
-      const pages = Object.entries(bundle).filter(([name]) => name.endsWith('.html')).map(([, item]) => item)
+      const pages = Object.entries(bundle).filter(([name]) => name.endsWith('.html'))
       const hero = Object.keys(bundle).find(name => /servihouse-technician.*\.webp$/.test(name) && !name.includes('technician-768'))
-      if (siteUrl && hero) {
-        const imageUrl = new URL(hero, siteUrl).href
-        for (const page of pages) {
+      const logo = Object.keys(bundle).find(name => /servihouse-logo.*\.webp$/.test(name))
+      const imageUrl = siteUrl && hero ? new URL(hero, siteUrl).href : ''
+      const logoUrl = siteUrl && logo ? new URL(logo, siteUrl).href : ''
+      if (siteUrl) {
+        for (const [fileName, page] of pages) {
+          const source = String(page.source)
+          if (source.includes('application/ld+json')) continue
+          const schema = buildSchema({ siteUrl, route: routeFromPath(fileName), html: source, logoUrl, imageUrl })
+          page.source = source.replace('</head>', `${schemaScript(schema)}\n</head>`)
+        }
+      }
+      if (imageUrl) {
+        for (const [, page] of pages) {
           let source = String(page.source)
           const tags = []
           if (!source.includes('property="og:image"')) tags.push(`<meta property="og:image" content="${imageUrl}">`)

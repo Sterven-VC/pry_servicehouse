@@ -9,8 +9,9 @@ export function HeroSection() {
     <section className="hero" id="inicio">
       <div className="hero-copy">
         <Eyebrow>Servicio técnico independiente · Lima</Eyebrow>
-        <h1>Tu electrodoméstico, <em>funcionando otra vez.</em></h1>
-        <p className="hero-lead">Servicio técnico de electrodomésticos a domicilio en Lima: lavadoras, lavasecas, refrigeradoras, hornos, campanas extractoras y aire acondicionado.</p>
+        <h1>Servicio técnico de electrodomésticos a domicilio en Lima</h1>
+        <p className="hero-tagline">Tu electrodoméstico, <em>funcionando otra vez.</em></p>
+        <p className="hero-lead">Reparamos, mantenemos e instalamos lavadoras, lavasecas, refrigeradoras, hornos, campanas extractoras y aire acondicionado.</p>
         <div className="hero-actions">
           <ContactLink type="whatsapp" placement="hero" className="btn btn-primary"><MessageCircle size={21} /> Pedir información</ContactLink>
           <ContactLink type="call" placement="hero" className="btn btn-secondary"><Phone size={20} /> Llamar ahora</ContactLink>
