@@ -9,6 +9,7 @@ import { CONTACT, createWhatsAppUrl } from '../src/config/contact.js'
 import { trackContact } from '../src/config/contact.js'
 import { ANALYTICS_MEASUREMENT_ID, consentState, loadGoogleTag, saveAnalyticsConsent } from '../src/lib/analytics.js'
 import { DEFAULT_SITE_URL, normalizeSiteUrl } from '../build/seo.js'
+import { servicePages } from '../src/data/servicePages.js'
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url))
 const dist = path.join(projectRoot, 'dist')
@@ -207,6 +208,31 @@ test('lavadoras service page has distinct, indexable content and an internal lin
   assert.deepEqual(graph.find(item => item['@type'] === 'BreadcrumbList').itemListElement.map(item => item.name), ['Inicio', 'Servicio técnico de lavadoras'])
   assert.ok(html.includes('href="https://wa.me/'))
   assert.doesNotMatch(html, /<!--app-html-->|__RENDER_YEAR__/)
+})
+
+test('every service has its own indexable landing linked from the home and the footer', async () => {
+  const home = await readFile(path.join(dist, 'index.html'), 'utf8')
+  const titles = new Set()
+  for (const page of servicePages) {
+    const html = await readFile(path.join(dist, page.route.slice(1), 'index.html'), 'utf8')
+    const url = `https://sevihouseperu.com${page.route}`
+    assert.equal((home.match(new RegExp(`href="${page.route}"`, 'g')) || []).length >= 2, true, `Home and footer must link ${page.route}`)
+    assert.equal((html.match(/<h1(?:\s|>)/g) || []).length, 1, page.route)
+    assert.ok(html.includes(`<h1>${page.h1}</h1>`), page.route)
+    assert.ok(html.includes(`<link rel="canonical" href="${url}">`), page.route)
+    const title = html.match(/<title>([^<]+)<\/title>/)[1]
+    assert.ok(!titles.has(title), `Duplicated title: ${title}`)
+    titles.add(title)
+    for (const problem of page.problems) assert.ok(html.includes(problem), `${page.route}: ${problem}`)
+    for (const other of servicePages.filter(item => item !== page)) assert.ok(html.includes(`href="${other.route}"`), `${page.route} -> ${other.route}`)
+    assert.match(html, new RegExp(`data-page="${page.key}"`))
+    assert.doesNotMatch(html, /<!--app-html-->|__RENDER_YEAR__|cocinas?/i)
+    const graph = readSchema(html)
+    const service = graph.find(item => item['@type'] === 'Service')
+    assert.equal(service.url, url)
+    assert.equal(service.name, page.h1)
+    assert.deepEqual(graph.find(item => item['@type'] === 'BreadcrumbList').itemListElement.map(item => item.name), ['Inicio', page.crumb])
+  }
 })
 
 test('prerendered image, stylesheet and script URLs exist in the output', async () => {

@@ -1,26 +1,19 @@
 import { BUSINESS } from '../src/config/business.js'
 import { CONTACT } from '../src/config/contact.js'
 import { serviceAreas, services } from '../src/data/siteData.js'
-
-const WASHING_MACHINES_ROUTE = '/servicio-tecnico-lavadoras-lima/'
+import { servicePages } from '../src/data/servicePages.js'
 
 // Breadcrumb labels and, for service landings, the Service the page describes.
 const PAGES = {
   '/': {},
-  [WASHING_MACHINES_ROUTE]: {
-    crumb: 'Servicio técnico de lavadoras',
-    service: {
-      name: 'Servicio técnico de lavadoras a domicilio en Lima',
-      serviceType: 'Reparación y mantenimiento de lavadoras, secadoras y lavasecas',
-    },
-  },
+  ...Object.fromEntries(servicePages.map(page => [page.route, { crumb: page.crumb, service: { name: page.h1, serviceType: page.serviceType } }])),
   '/aviso-legal/': { crumb: 'Aviso legal' },
   '/politica-de-privacidad/': { crumb: 'Política de privacidad' },
   '/politica-de-cookies/': { crumb: 'Política de cookies' },
   '/terminos-y-condiciones/': { crumb: 'Términos y condiciones' },
 }
 
-const SERVICE_ROUTES = { 'washing-machine': WASHING_MACHINES_ROUTE }
+const SERVICE_ROUTES = Object.fromEntries(servicePages.map(page => [page.icon, page.route]))
 
 const decode = value => value
   .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')

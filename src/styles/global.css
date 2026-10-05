@@ -238,6 +238,8 @@ footer { max-width: 1380px; margin-inline: auto; padding: 56px clamp(20px, 5vw, 
 .service-detail-hero nav { display: flex; align-items: center; gap: 12px; margin-bottom: 44px; color: var(--ink-soft); font-size: .75rem; }
 .service-detail-hero nav a { display: inline-flex; align-items: center; gap: 6px; color: var(--blue); font-weight: 800; }
 .service-detail-intro { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: clamp(32px, 5vw, 80px); }
+.service-detail-intro.no-photo { grid-template-columns: minmax(0, 1fr); }
+.service-detail-intro.no-photo h1 { max-width: 20ch; }
 .service-detail-intro h1 { max-width: 12ch; margin-block: 16px 24px; font-size: clamp(3rem, 6vw, 6rem); line-height: .95; }
 .service-detail-intro p:not(.eyebrow) { max-width: 60ch; color: var(--ink-soft); line-height: 1.75; }
 .service-detail-intro .hero-actions { margin-top: 28px; }

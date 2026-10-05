@@ -1,5 +1,6 @@
 import { AirVent, ArrowRight, Microwave, PackageCheck, PlugZap, Refrigerator, WashingMachine } from 'lucide-react'
 import { services } from '../../data/siteData'
+import { servicePageByIcon } from '../../data/servicePages'
 import { ContactLink } from '../ui/ContactLink'
 import { Eyebrow } from '../ui/Eyebrow'
 
@@ -17,7 +18,7 @@ export function ServicesSection() {
       <div className="service-list">
         {services.map(({ icon, title, text }, index) => {
           const Icon = icons[icon]
-          return <article className="service-row" key={title}><span className="service-number">0{index + 1}</span><Icon aria-hidden="true" /><div><h3>{icon === 'washing-machine' ? <a href="/servicio-tecnico-lavadoras-lima/">{title}</a> : title}</h3><p>{text}</p></div></article>
+          return <article className="service-row" key={title}><span className="service-number">0{index + 1}</span><Icon aria-hidden="true" /><div><h3>{servicePageByIcon[icon] ? <a href={servicePageByIcon[icon].route}>{title}</a> : title}</h3><p>{text}</p></div></article>
         })}
       </div>
     </section>

@@ -33,7 +33,7 @@ Después de hacer commit y push manual a GitHub, crear un servicio web desde Git
 
 Para que la redirección de `www` funcione, `www.sevihouseperu.com` debe apuntar a este mismo servicio en Seenode (dominio adicional con HTTPS).
 
-Rutas públicas: `/`, `/servicio-tecnico-lavadoras-lima/`, `/aviso-legal/`, `/politica-de-privacidad/`, `/politica-de-cookies/` y `/terminos-y-condiciones/`.
+Rutas públicas: `/`, las páginas de servicio definidas en `src/data/servicePages.js` (`/servicio-tecnico-lavadoras-lima/`, `/servicio-tecnico-refrigeradoras-lima/`, `/servicio-tecnico-aire-acondicionado-lima/` y `/reparacion-hornos-campanas-extractoras-lima/`), `/aviso-legal/`, `/politica-de-privacidad/`, `/politica-de-cookies/` y `/terminos-y-condiciones/`. Para añadir un servicio: agregar su entrada en `servicePages.js`, crear su `index.html` (copiando uno existente con sus metadatos y `data-page`) y su reescritura en `serve.json`; el build, el sitemap, el schema y `llms.txt` lo recogen solos.
 
 ## Dominio y SEO
 
@@ -43,7 +43,7 @@ Cuando se adquiera el dominio, configurar en Seenode la variable:
 SITE_URL=https://sevihouseperu.com
 ```
 
-Debe ser un origen HTTPS sin ruta, query ni fragmento. El dominio de producción ya está definido como respaldo en el build, y esta variable lo deja explícito en Seenode. El build generará canonical, `og:url`, `og:image`, datos estructurados JSON-LD por página (`build/schema.js`, a partir de `src/config` y `src/data`), `robots.txt` y `sitemap.xml`. Cambiar el dominio requiere un nuevo despliegue.
+Debe ser un origen HTTPS sin ruta, query ni fragmento. El dominio de producción ya está definido como respaldo en el build, y esta variable lo deja explícito en Seenode. El build generará canonical, `og:url`, `og:image`, datos estructurados JSON-LD por página (`build/schema.js`, a partir de `src/config` y `src/data`), `robots.txt`, `sitemap.xml` (con `lastmod`) y `llms.txt`, un resumen del negocio para asistentes y buscadores con IA. Cambiar el dominio requiere un nuevo despliegue.
 
 Después de conectar el dominio: validar DNS y HTTPS, registrar la propiedad en Google Search Console, enviar `/sitemap.xml` y ejecutar PageSpeed Insights y Rich Results Test sobre la URL pública.
 

@@ -4,6 +4,9 @@
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
     { "source": "/servicio-tecnico-lavadoras-lima", "destination": "/servicio-tecnico-lavadoras-lima/index.html" },
+    { "source": "/servicio-tecnico-refrigeradoras-lima", "destination": "/servicio-tecnico-refrigeradoras-lima/index.html" },
+    { "source": "/servicio-tecnico-aire-acondicionado-lima", "destination": "/servicio-tecnico-aire-acondicionado-lima/index.html" },
+    { "source": "/reparacion-hornos-campanas-extractoras-lima", "destination": "/reparacion-hornos-campanas-extractoras-lima/index.html" },
     { "source": "/aviso-legal", "destination": "/aviso-legal/index.html" },
     { "source": "/politica-de-privacidad", "destination": "/politica-de-privacidad/index.html" },
     { "source": "/politica-de-cookies", "destination": "/politica-de-cookies/index.html" },

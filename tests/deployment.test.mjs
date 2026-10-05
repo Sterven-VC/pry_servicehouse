@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { createServer, request } from 'node:http'
 import { seo } from '../build/seo.js'
 import { createRequestHandler, redirectLocation } from '../server.mjs'
+import { PUBLIC_ROUTES } from '../build/site.js'
 
 test('static hosting serves home, legal routes and assets, not source files or fake routes', async () => {
   const server = createServer(createRequestHandler())
@@ -26,12 +27,12 @@ test('static hosting serves home, legal routes and assets, not source files or f
     const asset = await fetch(origin + image)
     assert.equal(asset.status, 200)
     assert.ok(asset.headers.get('cache-control').includes('immutable'))
-    for (const path of ['/servicio-tecnico-lavadoras-lima/', '/aviso-legal/', '/politica-de-privacidad/', '/politica-de-cookies/', '/terminos-y-condiciones/']) {
+    for (const path of PUBLIC_ROUTES.filter(route => route !== '/')) {
       const page = await fetch(origin + path)
       assert.equal(page.status, 200, path)
       assert.match(await page.text(), /<h1(?:\s|>)/)
     }
-    for (const path of ['/servicio-tecnico-lavadoras-lima', '/aviso-legal', '/politica-de-privacidad', '/politica-de-cookies', '/terminos-y-condiciones']) {
+    for (const path of PUBLIC_ROUTES.filter(route => route !== '/').map(route => route.slice(0, -1))) {
       const redirect = await fetch(`${origin}${path}?gclid=abc&utm_source=google`, { redirect: 'manual' })
       assert.equal(redirect.status, 301, path)
       assert.equal(redirect.headers.get('location'), `${path}/?gclid=abc&utm_source=google`, path)
@@ -99,6 +100,12 @@ test('SEO emits consistent canonical, social image and sitemap when domain is co
     assert.ok(files.find(f => f.fileName === 'sitemap.xml').source.includes('<loc>https://example.com/servicio-tecnico-lavadoras-lima/</loc>'))
     assert.ok(files.find(f => f.fileName === 'sitemap.xml').source.includes('<loc>https://example.com/aviso-legal/</loc>'))
     assert.ok(files.find(f => f.fileName === 'robots.txt').source.includes('Sitemap: https://example.com/sitemap.xml'))
+    assert.match(files.find(f => f.fileName === 'sitemap.xml').source, /<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/)
+    const llms = files.find(f => f.fileName === 'llms.txt').source
+    assert.ok(llms.startsWith('# SERVIHOUSE'))
+    assert.ok(llms.includes('+51 929 853 856'))
+    for (const route of PUBLIC_ROUTES.filter(route => route !== '/')) assert.ok(llms.includes(`https://example.com${route}`), route)
+    assert.doesNotMatch(llms, /997|912138192/)
   } finally {
     if (previous === undefined) delete process.env.SITE_URL
     else process.env.SITE_URL = previous

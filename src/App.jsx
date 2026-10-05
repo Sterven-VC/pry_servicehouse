@@ -13,7 +13,8 @@ import { TrustBar } from './components/sections/TrustBar'
 import { AreasSection } from './components/sections/AreasSection'
 import { FloatingWhatsApp } from './components/ui/FloatingWhatsApp'
 import { LegalPage } from './components/legal/LegalPage'
-import { WashingMachinePage } from './components/services/WashingMachinePage'
+import { ServicePage } from './components/services/ServicePage'
+import { servicePageByKey } from './data/servicePages'
 import { CookieConsent } from './components/ui/CookieConsent'
 
 function App({ year, page = 'home' }) {
@@ -31,7 +32,7 @@ function App({ year, page = 'home' }) {
           <HeroSection /><TrustBar /><BrandsSection /><ServicesSection />
           <PartsSection /><ProcessSection /><AreasSection /><PromiseSection />
           <FaqSection /><FinalCtaSection />
-        </> : page === 'washing-machines' ? <WashingMachinePage /> : <LegalPage page={page} />}
+        </> : servicePageByKey[page] ? <ServicePage page={servicePageByKey[page]} /> : <LegalPage page={page} />}
       </main>
       <Footer year={year} isHome={page === 'home'} />
       <FloatingWhatsApp />

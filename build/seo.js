@@ -1,6 +1,7 @@
 import { loadEnv } from 'vite'
 import { DEFAULT_SITE_URL, PUBLIC_ROUTES } from './site.js'
 import { buildSchema, schemaScript } from './schema.js'
+import { buildLlmsTxt } from './llms.js'
 
 export { DEFAULT_SITE_URL, PUBLIC_ROUTES }
 
@@ -82,8 +83,10 @@ export function seo() {
       }
       this.emitFile({ type: 'asset', fileName: 'robots.txt', source: `User-agent: *\nAllow: /\n${siteUrl ? `\nSitemap: ${siteUrl}sitemap.xml\n` : ''}` })
       if (siteUrl) {
-        const urls = PUBLIC_ROUTES.map(route => `<url><loc>${new URL(route.slice(1), siteUrl).href}</loc></url>`).join('')
+        const lastmod = new Date().toISOString().slice(0, 10)
+        const urls = PUBLIC_ROUTES.map(route => `<url><loc>${new URL(route.slice(1), siteUrl).href}</loc><lastmod>${lastmod}</lastmod></url>`).join('')
         this.emitFile({ type: 'asset', fileName: 'sitemap.xml', source: `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>\n` })
+        this.emitFile({ type: 'asset', fileName: 'llms.txt', source: buildLlmsTxt(siteUrl) })
       }
     },
   }
