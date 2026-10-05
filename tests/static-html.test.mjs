@@ -37,7 +37,9 @@ test('contact tracking sends one GA4 event without message or phone data and lea
     trackContact('call', 'header')
     assert.deepEqual(events, [
       ['event', 'contact_click', { contact_method: 'whatsapp', placement: 'hero' }],
+      ['event', 'whatsapp_contact_click', { contact_method: 'whatsapp', placement: 'hero' }],
       ['event', 'contact_click', { contact_method: 'call', placement: 'header' }],
+      ['event', 'call_contact_click', { contact_method: 'call', placement: 'header' }],
     ])
     delete globalThis.window.gtag
     assert.doesNotThrow(() => trackContact('call', 'header'))
@@ -66,6 +68,7 @@ test('Google tag loads in Consent Mode v2 with everything denied until the visit
     assert.deepEqual(commands[0], ['consent', 'default', denied])
     assert.ok(commands.findIndex(([command]) => command === 'config') > 0, 'consent default must precede config')
     assert.ok(!commands.some(([command, action]) => command === 'consent' && action === 'update'))
+    assert.ok(commands.some(([command, key, value]) => command === 'set' && key === 'url_passthrough' && value === true))
     saveAnalyticsConsent('granted')
     assert.equal(stored, 'granted')
     assert.deepEqual([...window.dataLayer.at(-1)], ['consent', 'update', consentState(true)])

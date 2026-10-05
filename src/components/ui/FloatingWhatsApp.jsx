@@ -41,7 +41,7 @@ export function FloatingWhatsApp() {
             <p className="whatsapp-greeting">Hola, ¿en qué equipo necesitas ayuda?</p>
             <label htmlFor="whatsapp-message">Tu mensaje</label>
             <textarea ref={messageRef} id="whatsapp-message" value={message} onChange={(event) => setMessage(event.target.value)} rows="8" />
-            <a className="whatsapp-send" href={createWhatsAppUrl(message, { formatted: true })} onClick={() => trackContact('whatsapp', 'floating_widget')}>
+            <a className="whatsapp-send" href={createWhatsAppUrl(message, { formatted: true })} target="_blank" rel="noopener noreferrer" onClick={() => trackContact('whatsapp', 'floating_widget')}>
               <Send /> Enviar por WhatsApp
             </a>
           </div>

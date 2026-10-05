@@ -27,6 +27,8 @@ export function loadGoogleTag() {
   window.gtag = window.gtag || function gtag() { window.dataLayer.push(arguments) }
   window.gtag('consent', 'default', consentState(false))
   window.gtag('set', 'ads_data_redaction', true)
+  // Keeps gclid/UTM in internal links so a visit that lands on one page and converts on another stays attributed without cookies.
+  window.gtag('set', 'url_passthrough', true)
   if (getAnalyticsConsent() === 'granted') window.gtag('consent', 'update', consentState(true))
   window.gtag('js', new Date())
   window.gtag('config', ANALYTICS_MEASUREMENT_ID)
