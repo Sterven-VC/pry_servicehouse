@@ -36,9 +36,12 @@ test('contact tracking sends one GA4 event without message or phone data and lea
   try {
     trackContact('whatsapp', 'hero')
     trackContact('call', 'header')
+    const adsConversion = ['event', 'conversion', { send_to: 'AW-18443438027/L70gCJPN5pIdEMuPwtpE', value: 1.0, currency: 'PEN' }]
     assert.deepEqual(events, [
+      adsConversion,
       ['event', 'contact_click', { contact_method: 'whatsapp', placement: 'hero' }],
       ['event', 'whatsapp_contact_click', { contact_method: 'whatsapp', placement: 'hero' }],
+      adsConversion,
       ['event', 'contact_click', { contact_method: 'call', placement: 'header' }],
       ['event', 'call_contact_click', { contact_method: 'call', placement: 'header' }],
     ])
@@ -70,6 +73,7 @@ test('Google tag loads in Consent Mode v2 with everything denied until the visit
     assert.ok(commands.findIndex(([command]) => command === 'config') > 0, 'consent default must precede config')
     assert.ok(!commands.some(([command, action]) => command === 'consent' && action === 'update'))
     assert.ok(commands.some(([command, key, value]) => command === 'set' && key === 'url_passthrough' && value === true))
+    assert.ok(commands.some(([command, id]) => command === 'config' && id === 'AW-18443438027'), 'Google Ads destination must be configured')
     saveAnalyticsConsent('granted')
     assert.equal(stored, 'granted')
     assert.deepEqual([...window.dataLayer.at(-1)], ['consent', 'update', consentState(true)])

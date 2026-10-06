@@ -540,3 +540,30 @@ Solo se aparece en el **30 % de las búsquedas posibles**, y cuando coincidimos 
 - *Frase:* "por qué", "por que", "que es", "qué es", "pagina web", "página web".
 
 **Pendiente en GA4 (opcional):** eliminar o corregir la regla antigua de `whatsapp_contact_click` basada en `wa.me/51912138192`. Mientras exista no hace daño, porque ya no coincide con ningún enlace.
+
+## Actualización (5 de octubre de 2026): estrategia de puja
+
+- Se comprobó el despliegue de sevihouseperu.com en producción: páginas de servicio nuevas, `llms.txt`, la CSP con `analytics.google.com`, los eventos `whatsapp_contact_click`, `url_passthrough` y la redirección 301 de www.
+- **"ServiHouse #1": la puja pasa de "Maximizar conversiones" a "Maximizar clics", con un límite de CPC de S/3.50.** El presupuesto se mantiene en S/100.00/día y la campaña sigue detenida.
+- **Volver a "Maximizar conversiones"** cuando la campaña acumule entre 15 y 30 conversiones de "Clic en teléfono o WhatsApp (sitio web)" en 30 días.
+
+## Actualización (5 de octubre de 2026, tarde): objetivos y negativas
+
+- **Estado de la campaña:** habilitada, en aprendizaje, con "Maximizar conversiones", **objetivo específico de campaña "Contactos"** y S/75/día. Estos cambios los hizo el usuario.
+- **Acciones del objetivo "Contactos":**
+  - **Principal:** "Clic a WhatsApp (sitio web)" (`whatsapp_contact_click`, GA4, recuento "Una", 90 días).
+  - **Secundarias:** "Clic en teléfono o WhatsApp" (`contact_click`) y "Contacto (carga de página)".
+  - Equivale a la cuenta del cliente: un solo objetivo de campaña, con WhatsApp como principal y la llamada como secundaria.
+- **Las acciones GA4 pasaron de "Esperando conversiones" a "Activa"** tras el despliegue: los eventos ya llegan.
+- **Hoy hasta media tarde:** 54 impresiones, 2 clics y S/3.12, solo en Búsqueda. Las palabras clave están aptas.
+- **Se añadieron 8 negativas** (de 57 a 65): hiraoka, plustec, oster, cocina, cocinas, licuadoras, ollas, planchas.
+- **Diferencia restante con el cliente:** el cliente mide con la etiqueta de Google Ads directamente en su web ("Sitio web"); tu cuenta importa desde GA4. Esto tiene más retraso (hasta 24–48 h) y atribuye peor con consentimiento denegado.
+
+## Actualización (5 de octubre de 2026): etiqueta directa de Google Ads
+
+- **Acción nueva en "ServiHouse #1":** "Clic WhatsApp o llamada (etiqueta Ads)". Es la única acción **principal** del objetivo "Contactos", con fuente "Sitio web" (etiqueta de Google), recuento "Una", ventana de 90 días y atribución basada en datos.
+- **Etiqueta:** `AW-18443438027/L70gCJPN5pIdEMuPwtpE`.
+- **Las acciones de GA4 pasan a secundarias** ("Clic a WhatsApp", "Clic en teléfono o WhatsApp" y "Carga de página") para no contar doble.
+- **Conversiones avanzadas:** no se activaron, porque la web no tiene formularios y activarlas implicaba aceptar las condiciones de tratamiento de datos.
+- **En el código** (pendiente de commit y despliegue): `gtag('config', 'AW-18443438027')` y, en cada clic de WhatsApp o de llamada, `gtag('event', 'conversion', { send_to, value: 1, currency: 'PEN' })`, junto a los eventos GA4 que ya existían.
+- Hasta desplegar, la acción aparecerá como "Esperando conversiones" o "Sin verificar".

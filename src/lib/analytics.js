@@ -1,4 +1,7 @@
 export const ANALYTICS_MEASUREMENT_ID = 'G-20WZ969Z48'
+// Google Ads conversion "Clic WhatsApp o llamada (etiqueta Ads)": the campaign's primary action.
+export const ADS_CONVERSION_ID = 'AW-18443438027'
+export const ADS_CONTACT_CONVERSION = `${ADS_CONVERSION_ID}/L70gCJPN5pIdEMuPwtpE`
 // v2 covers analytics and advertising measurement; earlier answers only covered analytics,
 // so every visitor is asked again.
 export const ANALYTICS_CONSENT_KEY = 'servihouse-consent-v2'
@@ -32,6 +35,7 @@ export function loadGoogleTag() {
   if (getAnalyticsConsent() === 'granted') window.gtag('consent', 'update', consentState(true))
   window.gtag('js', new Date())
   window.gtag('config', ANALYTICS_MEASUREMENT_ID)
+  window.gtag('config', ADS_CONVERSION_ID)
 
   const script = document.createElement('script')
   script.async = true

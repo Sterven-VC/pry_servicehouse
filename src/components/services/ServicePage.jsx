@@ -1,7 +1,14 @@
-import { ArrowLeft, MessageCircle, Phone } from 'lucide-react'
+import { ArrowLeft, MapPin, MessageCircle, Phone, ShieldCheck, Wrench } from 'lucide-react'
 import technicianImage from '../../assets/images/servihouse-technician.webp'
 import { servicePages } from '../../data/servicePages'
 import { ContactLink } from '../ui/ContactLink'
+
+// Shown instead of the photo, so the hero is not half empty. Same promises as the home trust bar.
+const SERVICE_FACTS = [
+  { Icon: MapPin, title: 'Atención a domicilio', text: 'En distritos de Lima Metropolitana, según ubicación y agenda.' },
+  { Icon: Wrench, title: 'Diagnóstico antes de reparar', text: 'Te explicamos la falla y las opciones antes de proceder.' },
+  { Icon: ShieldCheck, title: 'Servicio independiente multimarca', text: 'No somos centro autorizado; atendemos distintas marcas.' },
+]
 
 export function ServicePage({ page }) {
   const id = page.placement.replace(/_/g, '-')
@@ -11,8 +18,8 @@ export function ServicePage({ page }) {
     <article className="service-detail">
       <div className="service-detail-hero section-shell">
         <nav aria-label="Ruta de navegación"><a href="/"><ArrowLeft aria-hidden="true" size={17} /> Inicio</a><span>/</span><span>{page.crumb}</span></nav>
-        {/* The only photo shows a washing machine, so other services go without one. */}
-        <div className={page.showPhoto ? 'service-detail-intro' : 'service-detail-intro no-photo'}>
+        {/* The only photo shows a washing machine, so other services show the key facts instead. */}
+        <div className="service-detail-intro">
           <div>
             <p className="eyebrow">Servicio técnico independiente · Lima</p>
             <h1>{page.h1}</h1>
@@ -22,7 +29,9 @@ export function ServicePage({ page }) {
               <ContactLink type="call" placement={page.placement} className="btn btn-secondary"><Phone aria-hidden="true" size={20} /> Llamar ahora</ContactLink>
             </div>
           </div>
-          {page.showPhoto && <img src={technicianImage} alt={page.imageAlt} title={page.imageTitle} width="1280" height="640" decoding="async" fetchpriority="high" />}
+          {page.showPhoto
+            ? <img src={technicianImage} alt={page.imageAlt} title={page.imageTitle} width="1280" height="640" decoding="async" fetchpriority="high" />
+            : <ul className="service-facts" aria-label="Cómo trabajamos">{SERVICE_FACTS.map(({ Icon, title, text }) => <li key={title}><span className="service-icon"><Icon aria-hidden="true" /></span><div><strong>{title}</strong><p>{text}</p></div></li>)}</ul>}
         </div>
       </div>
       <div className="service-detail-body section-shell">

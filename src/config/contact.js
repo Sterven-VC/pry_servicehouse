@@ -1,3 +1,5 @@
+import { ADS_CONTACT_CONVERSION } from '../lib/analytics.js'
+
 export const CONTACT = {
   whatsappDisplay: '929 853 856',
   whatsappNumber: '51929853856',
@@ -15,14 +17,15 @@ export function createWhatsAppUrl(message = CONTACT.whatsappMessage, { formatted
   return `https://wa.me/${CONTACT.whatsappNumber}?text=${encodeURIComponent(formatted ? message : formatWhatsAppMessage(message))}`
 }
 
-// GA4 events imported into Google Ads: `contact_click` is the primary conversion;
-// the per-channel events feed the secondary "Clic a WhatsApp" action and call reports.
+// The Google Ads conversion is the one the campaign bids on. The GA4 events stay for
+// analytics and as secondary (observation) actions imported into Google Ads.
 const CONTACT_EVENTS = { whatsapp: 'whatsapp_contact_click', call: 'call_contact_click' }
 
 // Consent Mode decides whether this is stored with cookies or sent as a cookieless ping.
 export function trackContact(method, placement) {
   if (typeof window === 'undefined' || typeof window.gtag !== 'function') return
   const params = { contact_method: method, placement }
+  window.gtag('event', 'conversion', { send_to: ADS_CONTACT_CONVERSION, value: 1.0, currency: 'PEN' })
   window.gtag('event', 'contact_click', params)
   if (CONTACT_EVENTS[method]) window.gtag('event', CONTACT_EVENTS[method], params)
 }
